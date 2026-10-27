@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<!--
+  Charlie CMFDH II — Live Dashboard
+  =================================
+  STANDALONE: open this file directly (file://) or serve it; it works as-is.
+  SQUARESPACE: paste everything from  <div id="cmfdh-dash-root">  through the
+  final  </script>  into a Code block. All CSS is scoped to #cmfdh-dash-root so
+  it will NOT touch the rest of your Squarespace page. Do not copy the <!DOCTYPE>,
+  <head>, or <body> wrappers — those are only for standalone viewing.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlie CMFDH II — Live Dashboard</title>
+</head>
+<body style="margin:0;padding:0;">
+
+<!-- ===================== SQUARESPACE CODE-BLOCK START ===================== -->
+<div id="cmfdh-dash-root">
+<span id="dash-top" style="position:absolute; top:0; left:0;"></span>
+<style>
+/* All rules scoped to #cmfdh-dash-root so nothing leaks into the host page. */
+#cmfdh-dash-root {
+  --gs-navy:#001A33; --gs-blue:#003C71; --gs-accent:#6CACE4; --gs-gold:#C9A227;
+  --gs-cream:#F5F1E8; --gs-white:#FFFFFF; --gs-dark-text:#1A1A1A; --gs-muted:#5C6B7A;
+  --gs-border:#D0D5DA; --gs-pos:#1B5E20; --gs-neg:#8B0000; --gs-warn:#B8860B;
+  --gs-pos-bg:#E8F5E9; --gs-warn-bg:#FFF8E1; --gs-neg-bg:#FFEBEE;
+  color-scheme:light; position:relative;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+  background:var(--gs-cream); color:var(--gs-dark-text); line-height:1.5; font-size:14px;
+  max-width:1040px; margin:0 auto;
+  -webkit-text-size-adjust:100%; -webkit-tap-highlight-color:transparent;
+}
+#cmfdh-dash-root * { box-sizing:border-box; }
+#cmfdh-dash-root header { background:var(--gs-navy); color:var(--gs-white); padding:22px 32px 16px; border-bottom:3px solid var(--gs-gold); }
+#cmfdh-dash-root .head-row { display:flex; justify-content:space-between; align-items:flex-end; gap:18px; flex-wrap:wrap; }
+#cmfdh-dash-root .brand h1 { font-size:22px; font-weight:300; letter-spacing:0.18em; margin:0 0 4px 0; color:var(--gs-white); }
+#cmfdh-dash-root .brand .sub { font-size:11px; letter-spacing:0.22em; color:var(--gs-accent); text-transform:uppercase; font-weight:500; }
+#cmfdh-dash-root .meta { text-align:right; font-family:"SF Mono",monospace; }
+#cmfdh-dash-root .ts { color:var(--gs-white); font-size:12px; margin-bottom:4px; letter-spacing:0.05em; }
+#cmfdh-dash-root .last-updated { color:var(--gs-accent); font-size:11px; letter-spacing:0.04em; }
+#cmfdh-dash-root .last-updated.fresh { color:#9FE1CB; }
+#cmfdh-dash-root .last-updated.stale { color:#F4A8A8; }
+#cmfdh-dash-root .badge { display:inline-block; padding:4px 10px; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; background:var(--gs-gold); color:var(--gs-navy); font-weight:600; }
+#cmfdh-dash-root .badge.live { background:var(--gs-pos); color:var(--gs-white); margin-left:4px; }
+#cmfdh-dash-root .badge.warn { background:var(--gs-warn); color:var(--gs-white); margin-left:4px; }
+#cmfdh-dash-root .fetch-status { background:var(--gs-warn-bg); border-left:4px solid var(--gs-warn); padding:10px 32px; font-size:12.5px; font-family:"SF Mono",monospace; }
+#cmfdh-dash-root .fetch-status.ok { background:var(--gs-pos-bg); border-left-color:var(--gs-pos); color:var(--gs-pos); }
+#cmfdh-dash-root .fetch-status.err { background:var(--gs-neg-bg); border-left-color:var(--gs-neg); color:var(--gs-neg); }
+#cmfdh-dash-root .fetch-status strong { font-weight:600; }
+
+/* Table of Contents */
+#cmfdh-dash-root .toc { background:var(--gs-white); border:1px solid var(--gs-border); border-left:5px solid var(--gs-navy); padding:14px 22px; margin:18px 32px 0; }
+#cmfdh-dash-root .toc-title { font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gs-navy); font-weight:700; margin-bottom:8px; }
+#cmfdh-dash-root .toc ol { margin:0; padding-left:20px; columns:2; -webkit-columns:2; font-size:13px; line-height:1.95; }
+#cmfdh-dash-root .toc a { color:var(--gs-blue); text-decoration:none; }
+#cmfdh-dash-root .toc a:hover { text-decoration:underline; }
+
+#cmfdh-dash-root .snapshot-bar { background:var(--gs-blue); color:var(--gs-white); padding:12px 32px; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:16px; }
+#cmfdh-dash-root .snapshot-bar .item { display:flex; flex-direction:column; gap:2px; }
+#cmfdh-dash-root .snapshot-bar .label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gs-accent); font-weight:500; }
+#cmfdh-dash-root .snapshot-bar .val { font-family:"SF Mono",monospace; font-size:14px; color:var(--gs-white); }
+#cmfdh-dash-root .snapshot-bar .val.pos { color:#9FE1CB; font-weight:500; }
+#cmfdh-dash-root .snapshot-bar .val.neg { color:#F4A8A8; font-weight:500; }
+#cmfdh-dash-root main { padding:22px 32px; }
+#cmfdh-dash-root section { margin-bottom:24px; scroll-margin-top:12px; }
+#cmfdh-dash-root h2.section-title { font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--gs-navy); margin:0 0 12px 0; padding-bottom:8px; border-bottom:2px solid var(--gs-navy); font-weight:600; }
+#cmfdh-dash-root h2.section-title .ct { font-weight:400; color:var(--gs-muted); margin-left:10px; letter-spacing:0.08em; text-transform:none; font-size:11px; }
+
+/* Go to Top — hard-coded at bottom of each section */
+#cmfdh-dash-root .go-top-wrap { text-align:right; margin-top:12px; }
+#cmfdh-dash-root .go-top { display:inline-block; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gs-blue); text-decoration:none; padding:9px 16px; border:1px solid var(--gs-border); border-radius:4px; background:var(--gs-white); min-height:38px; }
+#cmfdh-dash-root .go-top:hover { background:var(--gs-navy); color:var(--gs-white); border-color:var(--gs-navy); }
+/* Go to Top — floating with the browser */
+#cmfdh-dash-root .float-top { position:fixed; right:18px; bottom:18px; z-index:99999; display:none; background:var(--gs-navy); color:var(--gs-white); border:2px solid var(--gs-gold); border-radius:30px; padding:12px 18px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; cursor:pointer; min-height:44px; box-shadow:0 2px 12px rgba(0,0,0,0.28); }
+
+/* Tables */
+#cmfdh-dash-root .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+#cmfdh-dash-root .scan-table { width:100%; border-collapse:collapse; background:var(--gs-white); border:1px solid var(--gs-border); font-size:13px; min-width:520px; }
+#cmfdh-dash-root .scan-table thead th.title-bar { background:var(--gs-blue); color:var(--gs-white); text-align:left; padding:10px 14px; font-weight:500; font-size:12px; letter-spacing:0.10em; text-transform:uppercase; border-bottom:2px solid var(--gs-gold); }
+#cmfdh-dash-root .scan-table thead th { background:var(--gs-navy); color:var(--gs-white); text-align:left; padding:8px 12px; font-weight:500; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; }
+#cmfdh-dash-root .scan-table thead th.num { text-align:right; }
+#cmfdh-dash-root .scan-table tbody td { padding:7px 12px; border-top:1px solid var(--gs-border); font-family:"SF Mono",monospace; font-size:12px; }
+#cmfdh-dash-root .scan-table tbody td.lbl { font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+#cmfdh-dash-root .scan-table tbody td.num { text-align:right; }
+#cmfdh-dash-root .scan-table tbody tr.held { background:rgba(201,162,39,0.10); }
+#cmfdh-dash-root .scan-table tbody tr.atm { background:rgba(108,172,228,0.10); }
+#cmfdh-dash-root .scan-table tbody tr.held td.lbl { font-weight:600; }
+#cmfdh-dash-root .scan-table td.edge-pos { color:var(--gs-pos); }
+#cmfdh-dash-root .scan-table td.edge-neg { color:var(--gs-neg); }
+
+/* AI tabs */
+#cmfdh-dash-root .ai-section { background:var(--gs-white); border:1px solid var(--gs-border); border-left:5px solid var(--gs-gold); }
+#cmfdh-dash-root .ai-tabs { display:flex; flex-wrap:wrap; background:var(--gs-navy); }
+#cmfdh-dash-root .ai-tab { background:var(--gs-navy); color:var(--gs-accent); border:none; padding:13px 18px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:500; cursor:pointer; border-bottom:3px solid transparent; font-family:inherit; min-height:44px; }
+#cmfdh-dash-root .ai-tab:hover { color:var(--gs-white); }
+#cmfdh-dash-root .ai-tab.active { color:var(--gs-white); border-bottom-color:var(--gs-gold); background:var(--gs-blue); }
+#cmfdh-dash-root .ai-body { padding:18px 22px; }
+#cmfdh-dash-root .ai-body h3 { font-size:13px; color:var(--gs-navy); margin:0 0 10px 0; font-weight:600; letter-spacing:0.05em; }
+#cmfdh-dash-root .ai-body p { margin:0 0 10px 0; font-size:13px; line-height:1.6; }
+#cmfdh-dash-root .ai-body .kv { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px 18px; margin-bottom:12px; }
+#cmfdh-dash-root .ai-body .kv .k { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gs-muted); font-weight:600; }
+#cmfdh-dash-root .ai-body .kv .v { font-family:"SF Mono",monospace; font-size:14px; color:var(--gs-navy); }
+#cmfdh-dash-root .ai-body .kv .v.pos { color:var(--gs-pos); }
+#cmfdh-dash-root .ai-body .kv .v.neg { color:var(--gs-neg); }
+#cmfdh-dash-root .ai-body .verdict { background:var(--gs-cream); border-left:4px solid var(--gs-gold); padding:10px 14px; font-size:12.5px; line-height:1.6; margin-top:12px; }
+#cmfdh-dash-root .ai-body .verdict strong { color:var(--gs-navy); }
+#cmfdh-dash-root .pos-card { background:var(--gs-white); border:1px solid var(--gs-border); border-left:4px solid var(--gs-blue); padding:12px 18px; margin-bottom:8px; }
+#cmfdh-dash-root .pos-card.future { border-left-color:var(--gs-navy); }
+#cmfdh-dash-root .pos-card.option { border-left-color:var(--gs-gold); }
+#cmfdh-dash-root .pos-card .head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+#cmfdh-dash-root .pos-card .label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; padding:2px 8px; border-radius:3px; background:var(--gs-cream); color:var(--gs-navy); }
+#cmfdh-dash-root .pos-card .label.option { background:rgba(201,162,39,0.18); color:var(--gs-warn); }
+#cmfdh-dash-root .pos-card .label.future { background:rgba(0,60,113,0.10); color:var(--gs-blue); }
+#cmfdh-dash-root .pos-card .name { color:var(--gs-navy); font-size:13px; font-weight:600; margin-left:6px; }
+#cmfdh-dash-root .pos-card .when { font-family:"SF Mono",monospace; font-size:12px; color:var(--gs-muted); }
+#cmfdh-dash-root .pos-card .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px 16px; margin-top:10px; font-size:12px; font-family:"SF Mono",monospace; }
+#cmfdh-dash-root .pos-card .grid .k { color:var(--gs-muted); font-size:10px; text-transform:uppercase; letter-spacing:0.10em; display:block; }
+#cmfdh-dash-root .pos-card .note { font-size:11px; color:var(--gs-muted); margin-top:8px; padding-top:8px; border-top:1px solid var(--gs-border); line-height:1.5; }
+#cmfdh-dash-root .scen-table { width:100%; border-collapse:collapse; font-size:12px; font-family:"SF Mono",monospace; margin-top:8px; min-width:680px; table-layout:fixed; }
+#cmfdh-dash-root .scen-table th, #cmfdh-dash-root .scen-table td { padding:6px 8px; border-top:1px solid var(--gs-border); text-align:right; width:14.28%; }
+#cmfdh-dash-root .scen-table th:first-child, #cmfdh-dash-root .scen-table td:first-child { text-align:left; }
+#cmfdh-dash-root .scen-table th { background:#000; color:#fff; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; white-space:normal; vertical-align:bottom; overflow-wrap:anywhere; line-height:1.25; }
+#cmfdh-dash-root .scen-table th span { display:block; margin-top:3px; color:#cfd6df !important; letter-spacing:0; text-transform:none; }
+#cmfdh-dash-root .scen-table td.pos { color:var(--gs-pos); }
+#cmfdh-dash-root .scen-table td.neg { color:var(--gs-neg); }
+#cmfdh-dash-root .scen-table tr.spot td { background:rgba(108,172,228,0.18); font-weight:600; }
+#cmfdh-dash-root .strategy-card { background:var(--gs-white); border:1px solid var(--gs-border); border-left:4px solid var(--gs-blue); padding:14px 18px; font-size:12.5px; line-height:1.6; }
+#cmfdh-dash-root .strategy-card h4 { margin:0 0 6px 0; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gs-navy); font-weight:600; }
+#cmfdh-dash-root .strategy-card .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px 16px; margin:10px 0; font-family:"SF Mono",monospace; font-size:12px; }
+#cmfdh-dash-root .strategy-card .stats .k { color:var(--gs-muted); font-size:9px; text-transform:uppercase; letter-spacing:0.14em; }
+#cmfdh-dash-root footer { background:var(--gs-navy); color:var(--gs-accent); padding:18px 32px 22px; font-size:11.5px; line-height:1.65; border-top:3px solid var(--gs-gold); }
+#cmfdh-dash-root footer h3 { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gs-gold); margin:0 0 5px 0; font-weight:600; }
+#cmfdh-dash-root footer p { margin:0 0 8px 0; color:var(--gs-accent); }
+#cmfdh-dash-root footer code { background:rgba(108,172,228,0.10); padding:1px 6px; border-radius:3px; font-size:10.5px; }
+#cmfdh-dash-root footer .stamp { margin-top:12px; padding-top:10px; border-top:1px solid rgba(108,172,228,0.20); font-family:"SF Mono",monospace; font-size:10px; color:rgba(108,172,228,0.70); letter-spacing:0.06em; }
+
+/* Responsive: iOS / Android / narrow browsers */
+@media (max-width:640px) {
+  #cmfdh-dash-root { font-size:13px; }
+  #cmfdh-dash-root header { padding:18px 16px 14px; }
+  #cmfdh-dash-root .head-row { flex-direction:column; align-items:flex-start; }
+  #cmfdh-dash-root .meta { text-align:left; }
+  #cmfdh-dash-root .toc { margin:14px 16px 0; }
+  #cmfdh-dash-root .toc ol { columns:1; -webkit-columns:1; }
+  #cmfdh-dash-root .snapshot-bar { padding:12px 16px; }
+  #cmfdh-dash-root .fetch-status { padding:10px 16px; }
+  #cmfdh-dash-root main { padding:18px 16px; }
+  #cmfdh-dash-root footer { padding:18px 16px 22px; }
+  #cmfdh-dash-root .float-top { right:12px; bottom:12px; padding:10px 14px; }
+}
+</style>
+
+  <header>
+    <div class="head-row">
+      <div class="brand">
+        <h1>CHARLIE CMFDH II</h1>
+        <div class="sub">Live dashboard &middot; quarterly fund &middot; auto-refresh 5min</div>
+      </div>
+      <div class="meta">
+        <div class="ts" id="utc-now">Loading...</div>
+        <div class="last-updated" id="last-updated">Initializing...</div>
+        <div style="margin-top:4px;">
+          <span class="badge">Q2 2026</span>
+          <span class="badge live" id="status-badge">Auto-refresh</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="fetch-status" id="fetch-status"><strong>Fetching live Deribit data...</strong></div>
+
+  <!-- I. Table of Contents -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#sec-snapshot" data-scroll>Snapshot &amp; freshness</a></li>
+      <li><a href="#sec-ai" data-scroll>AI analysis</a></li>
+      <li><a href="#sec-positions" data-scroll>Open positions</a></li>
+      <li><a href="#sec-strategy" data-scroll>CMFDH II strategy reference</a></li>
+      <li><a href="#sec-balances" data-scroll>Daily fund balance &amp; total return</a></li>
+    </ol>
+  </nav>
+
+  <div id="sec-snapshot" class="snapshot-bar">
+    <div class="item"><span class="label">BTC Spot Price</span><span class="val" id="btc-spot">&mdash;</span></div>
+    <div class="item"><span class="label">Net Delta (BTC)</span><span class="val" id="net-delta">&mdash;</span></div>
+    <div class="item"><span class="label">Theta / day</span><span class="val pos" id="theta-day">&mdash;</span></div>
+    <div class="item"><span class="label">Vega</span><span class="val" id="vega-val">&mdash;</span></div>
+    <div class="item"><span class="label">Days to JUN26</span><span class="val" id="dte">&mdash;</span></div>
+    <div class="item"><span class="label">IM (BTC)</span><span class="val" id="im-val">&mdash;</span></div>
+    <div class="item"><span class="label">Qtr P/L (BTC)</span><span class="val" id="pnl-val">&mdash;</span></div>
+    <div class="item"><span class="label">Account Balance (BTC/USD)</span><span class="val" id="account-balance-btc-usd">&mdash;</span></div>
+    <div class="item"><span class="label">Open positions</span><span class="val" id="op-count">&mdash;</span></div>
+    <div class="item"><span class="label">Futures</span><span class="val" id="op-futures">&mdash;</span></div>
+    <div class="item"><span class="label">Options</span><span class="val" id="op-options">&mdash;</span></div>
+    <!-- <div class="item"><span class="label">Notional (USD)</span><span class="val" id="op-notional">&mdash;</span></div> -->
+    <div class="item"><span class="label">Position PnL (since entry)</span><span class="val" id="op-total-pnl">&mdash;</span></div>
+    <!-- <div class="item"><span class="label">Largest position</span><span class="val" id="op-largest">&mdash;</span></div> -->
+  </div>
+
+  <main>
+
+    <section id="sec-ai">
+      <h2 class="section-title">AI Analysis <span class="ct">greeks client-side &middot; income run updated every weekday 07:00 Bali</span></h2>
+      <div class="ai-section">
+        <div class="ai-tabs" id="ai-tabs">
+          <button class="ai-tab active" data-tab="daily">Daily Income Run</button>
+          <button class="ai-tab" data-tab="greeks">Greeks &amp; Risk</button>
+          <button class="ai-tab" data-tab="scenario">Scenario (BTC &plusmn;%)</button>
+          <button class="ai-tab" data-tab="calendar">Calendar / Roll</button>
+          <button class="ai-tab" data-tab="strategy">Strategy Compare</button>
+        </div>
+        <div class="ai-body" id="ai-body"><p style="color:var(--gs-muted);">Loading analysis...</p></div>
+      </div>
+      <div class="go-top-wrap"><a class="go-top" href="#dash-top" data-scroll>&uarr; Go to Top</a></div>
+    </section>
+
+    <section id="sec-positions">
+      <h2 class="section-title">Open positions <span class="ct">live from <code>/deribit/positions</code> (future + option)</span></h2>
+      <div id="positions-container"><p style="color:var(--gs-muted);">Loading positions...</p></div>
+      <div class="go-top-wrap"><a class="go-top" href="#dash-top" data-scroll>&uarr; Go to Top</a></div>
+    </section>
+
+    <section id="sec-strategy">
+      <h2 class="section-title">CMFDH II strategy reference <span class="ct">from levenstein.net</span></h2>
+      <div class="strategy-card">
+        <h4>Crypto Money Fund Dollar Hedge II</h4>
+        <p>Designed to mitigate downside risk while generating uncorrelated yield through crypto derivatives. Similar framework to original CMFDH but <strong>not strictly zero-delta</strong> &mdash; discretionary drift allowed. Quarterly rebalancing; positions move mid-quarter only on assignment, calendar swap, or material strike-roll events.</p>
+        <div class="stats">
+          <div><div class="k">Long-term IRR target</div><div>52% CAGR (annualized)</div></div>
+          <div><div class="k">Year-1 (2023) gross</div><div>+125% before fees</div></div>
+          <div><div class="k">Q1 2026</div><div>BTC &minus;22% &middot; fund outperformed by ~12pp</div></div>
+          <div><div class="k">Mgmt fee</div><div>0.5% / quarter</div></div>
+          <div><div class="k">Success fee</div><div>20% of quarterly profit</div></div>
+          <div><div class="k">Liquidity</div><div>Quarterly, 2-week notice, no gates</div></div>
+        </div>
+      </div>
+      <div class="go-top-wrap"><a class="go-top" href="#dash-top" data-scroll>&uarr; Go to Top</a></div>
+    </section>
+
+    <section id="sec-balances">
+      <h2 class="section-title">Daily fund balance &amp; total return <span class="ct">daily balance &middot; net return since Jan 2023 (updated quarterly)</span></h2>
+      <div id="balances-perf" class="strategy-card" style="margin-bottom:12px;">Loading performance...</div>
+      <div class="table-scroll">
+        <table class="scan-table" id="balances-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="num">Balance (BTC)</th>
+              <th class="num">Balance (USD)</th>
+            </tr>
+          </thead>
+          <tbody id="balances-tbody"><tr><td colspan="3" class="lbl" style="text-align:center; color:var(--gs-muted);">Loading daily balances...</td></tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:11px; color:var(--gs-muted); margin:8px 0 0;">Daily fund balance recorded each weekday morning (07:00 Bali) from the live Deribit account balance; newest on top. USD marked <em>@spot</em> uses the live BTC price until that day&rsquo;s close value is recorded. <strong>Net return</strong> above is time-weighted and net of fees, with all deposits and withdrawals removed &mdash; refreshed quarterly from the returns engine, not derived from the daily balance line.</p>
+      <div class="go-top-wrap"><a class="go-top" href="#dash-top" data-scroll>&uarr; Go to Top</a></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <h3>How this works</h3>
+    <p>Deribit price &amp; greeks pulled from openclaw API every 5 minutes (<code>fetch</code> from this page; works directly via <code>file://</code> and Squarespace since openclaw allows CORS). The "Last Deribit feed" stamp reflects the feed's own <code>snapshot_at</code> &mdash; so if openclaw's poller stalls you'll see the data's true age, not a wall-clock "now". Positions read from <code>positions.json</code> next to this file (embedded fallback when served where the file isn't reachable, e.g. Squarespace) &mdash; refreshed when you drop a new TigerEx CSV into <code>current position/</code>. AI analyses are computed client-side &mdash; no API key, no LLM call.</p>
+    <p>Quarterly fund cadence means positions only change on assignment / calendar swap / strike roll. When that happens, drop the new TigerEx CSV in <code>current position/</code> and either ask Cowork "refresh CMFDH positions" or run <code>refresh_positions.py</code> in this folder.</p>
+    <div class="stamp">Charlie CMFDH II &middot; v2 &middot; quarterly rebalanced &middot; TOC + go-to-top + responsive + Squarespace-ready</div>
+  </footer>
+
+  <!-- IV. Floating Go to Top -->
+  <button id="floatTop" class="float-top" type="button" aria-label="Go to top">&uarr; Top</button>
+
+</div>
+
+<script>
+// ============================================================================
+// Charlie CMFDH II — quarterly hedge fund dashboard (v2)
+// Live Deribit chain via openclaw, positions from positions.json,
+// AI analyses computed deterministically client-side.
+// All DOM access is scoped under #cmfdh-dash-root.
+// ============================================================================
+(function () {
+  const ROOT = document.getElementById('cmfdh-dash-root');
+  const $ = (id) => ROOT.querySelector('#' + id);
+
+  const OPENCLAW = "https://openclaw-api.aneep.tech";
+  const REFRESH_MS = 300000; // 5 min — quarterly fund
+
+  // High Water Mark: BTC price at the start of the current quarter.
+  // RULE: never sell calls with strike below this — assignment below quarter-start
+  // price loses BTC and dollars in the same quarter. Update at each quarterly reset.
+  const QUARTER_HWM_USD = 59817; // Q3 2026 (= BTC spot at Jun 26 reset)
+
+  // BTC balance at quarter start (Q2 closing from the Jun 30, 2026 report:
+  // 16.65107579 BTC aggregated equity @ $58,542.90). Qtr P/L = live account
+  // equity − this. Was briefly 16.472 (the Jun 26 HWM-reset balance), but the
+  // Jun 26→30 gain is already booked in Q2's results — measuring from 16.472
+  // double-counted it and made this bar disagree with the quarterly report.
+  const QUARTER_OPEN_BTC = 16.65107579; // Q3 2026 (= Jun 30 report equity)
+
+
+  let STATE = {
+    positions: null,
+    deribitPositions: [],
+    deribitSummary: null,
+    deribitAccount: null,
+    btcSpot: null,
+    chainRows: [],
+    chainExpiryLabel: "",
+    daysToOurExpiry: null,
+    lastRefresh: null,        // when the browser last rendered (wall clock)
+    feedTimestamp: null,      // the Deribit feed's OWN snapshot_at — the real data age
+    fetchOk: false,
+    activeTab: "daily",
+    analysis: null,           // weekday income run (ai-analysis.json / embedded)
+    balances: null,           // daily fund balance ledger (daily-balances.json / embedded)
+  };
+
+  // ----- Weekday income run (written by Charlie every weekday 07:00 Bali) -----
+  // Fetches ./ai-analysis.json next to this file; falls back to the embedded
+  // copy below (refreshed by the same weekday task) when serving via Squarespace.
+  async function loadAnalysis() {
+    try {
+      const r = await fetch('./ai-analysis.json?_=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      STATE.analysis = await r.json();
+    } catch (err) {
+      STATE.analysis = EMBEDDED_ANALYSIS;
+    }
+    if (STATE.activeTab === 'daily') renderAi();
+  }
+
+  /* EMBEDDED_ANALYSIS_START — auto-replaced by the weekday income run. Do not edit by hand. */
+const EMBEDDED_ANALYSIS = {
+  "generated_utc": "2026-09-17T01:07:03Z",
+  "run_label": "DAILY 07:00 Bali — Thu 2026-09-17 (Charlie) — partial-feed run: /deribit/positions (future+option) and /deribit/account live at 01:07 UTC via openclaw-api.aneep.tech (bash sandbox network was up today). BTC index $76,286.36, up 0.79% from yesterday's $75,687.68. LIMITED FEED: the browser pane's access request to openclaw-api.aneep.tech was auto-declined (unattended run, no user present to approve), and www.deribit.com is blocked outright by the sandbox network allowlist (403 blocked-by-allowlist), so — unlike the last several runs — there was no Chrome workaround for the DEV-3 quarterly/monthly chain gap today. All numbers below come only from the openclaw positions/account feed (marks on the 2 held SEP26 legs + SEP26/DEC26 futures) plus account-level greeks. No live SEP26/OCT26/DEC26 order book, no bid/ask, no IV was available this run — see data_gaps.",
+  "hwm_usd": 59817,
+  "spot_usd": 76286.36,
+  "headline": "ACTION (day 5 in the roll window, still not executed) — front SEP26 future is 8.29 DTE: do the SEP26→DEC26 calendar roll by early next week — close the 5.1116 BTC ($390,500) SEP26 leg and open ≈$464,572 (≈6.0059 BTC) of new DEC26, bringing total DEC26 to exactly 7.2987 BTC = 50.0% of the 14.5974 BTC book. SECOND ACTION — the income half is STILL UNDER-WRITTEN by 3.193 BTC (5th consecutive day; nothing has filled): with today's data gap Charlie could not pull a live SEP26 strike-by-strike quote, so no exact premium is quoted this run — Nick, please pull a live SEP26 screen/RFQ quote near the ~0.15-0.20 delta strike (≈78k-80k given spot $76,286) and write against the bare 3.19 BTC. THIRD — both held call legs are now deep past the capture threshold (84k 85.0%, 86k 95.2%) — let both expire, do not buy back. Nothing else is due before the 2026-09-25 expiry + Q4 reset (8 days).",
+  "hwm_check": {
+    "pass": true,
+    "detail": "PASS on both held strikes. Q3 2026 floor = $59,817 (BTC spot at the 2026-06-26 reset); spot $76,286.36 is 27.5% ABOVE it — up from 26.5% yesterday as spot rose 0.79% overnight. HELD 3x BTC-25SEP26-84,000-C: $24,183 (+40.4%) above the floor, $7,714 (+10.1%) above spot. HELD 2x BTC-25SEP26-86,000-C: $26,183 (+43.8%) above the floor, $9,714 (+12.7%) above spot. No short put, strangle, or naked leg exists in the book — no structure can lose BTC and USD in the same quarter. No new strike was proposed today (data gap — see below), so nothing new to check against the floor. RESET WARNING (8 days): on 2026-09-25 08:00 UTC — the same hour the SEP26 book expires and the front future settles — the floor moves to Q4-open spot in three places: index.html (public dashboard, top-level of the CMFDH-II folder), dashboard-internal.html, and hwm_usd in this JSON — plus QUARTER_OPEN_BTC in both HTML files. At today's spot the new floor would be ≈$76,300, i.e. the 84k/86k strikes now held would still clear it comfortably."
+  },
+  "covered_call": [
+    {
+      "title": "NEXT-EXPIRY RADAR — calls — BOTH capture flags fired and are now deep past threshold (84k at 85.0%, 86k at 95.2% — both LET RUN) plus the standing UNDER-WRITTEN flag (day 5). No ≤7-DTE flag yet: that fires around 2026-09-18. Next hard decision point 2026-09-25 08:00 UTC.",
+      "detail": "HELD 3x BTC-25SEP26-84,000-C: entry 0.0085 BTC ($648 at today's spot), mark 0.0012758 ($97.33), CAPTURED 85.0% (was 77.6% yesterday) — well past the 70-80% trigger band. Delta -0.16008 total, theta $86.86/day, 8.29 DTE (expiry 2026-09-25 08:00 UTC). HELD 2x BTC-25SEP26-86,000-C: entry 0.0140 ($1,068), mark 0.00067891 ($51.79), CAPTURED 95.2% (was 91.9%), delta -0.05835 total, theta $37.75/day — even further past the trigger. Decision on BOTH: LET RUN to expiry, do not buy back — see the buyback arithmetic entry below. UNDER-WRITTEN FLAG (standing, 5th consecutive day): margin_balance 14.59740925 BTC less the 6.4043 BTC hedge leaves an 8.19307 BTC income half, of which only 5 BTC carries a short call — 3.19307 BTC earns nothing for a 5th straight day. No new write was quoted today because the live SEP26 chain (bid/ask beyond the 2 held strikes) was not reachable this run — see data_gaps. Next decision points: ~2026-09-18 (7-DTE flag on both SEP legs — informational, let them run), 2026-09-25 08:00 UTC (SEP26 expiry + front-future settlement + Q4 reset — new floor, new QUARTER_OPEN_BTC, write the Q4 income book)."
+    },
+    {
+      "title": "THE WRITE — data gap, no live quote this run. Directional guidance only: a SEP26 strike near 78k-80k (≈0.15-0.20 delta given spot $76,286) against the bare 3.19 BTC, sized to 3 contracts.",
+      "detail": "Charlie could not source a live SEP26 order book for strikes other than the 2 already held (84k/86k) this run — openclaw-api.aneep.tech only exposes a near-dated 'today'/'tomorrow' CSV (confirmed against its own OpenAPI spec: the day parameter only accepts those two values, no monthly/quarterly chain endpoint exists), the built-in browser's access request to the API host was auto-declined with no user present to approve it, and www.deribit.com is blocked outright by the sandbox's network allowlist (403 blocked-by-allowlist on direct query). Rather than invent a premium, this run defers the exact strike/price to Nick pulling a live screen quote or MM RFQ. Directionally: the delta ladder has moved UP slightly with today's 0.79% spot rally (previous sessions anchored the ~0.20-delta strike at 80k when spot was $75,688-75,688; at $76,286 the same delta likely sits at 80k-81k). Sizing unchanged: 3 contracts covers the 3.193 BTC bare slice (rounds down; residual too small for a 4th). This is the single highest-value fix for tomorrow's run: if bash/browser access is available, pull GET quotes for BTC-25SEP26-{78000,80000,82000}-C specifically."
+    },
+    {
+      "title": "Both capture flags — buyback vs. let-it-run, leg by leg. Answer: LET RUN on both, and the case is stronger than yesterday.",
+      "detail": "84k leg: 3 contracts at mark 0.0012758 BTC (~$97.33 each) would cost ≈0.0038274 BTC (~$292) to close at mark — with no live ask this run, mark is used as the floor estimate of actual buyback cost (real ask will be somewhat higher). Maximum value left in the position by holding to expiry is that same mark-implied figure, so buying back can only breakeven-or-lose versus the spread once a real ask is applied. 86k leg: 2 contracts at mark 0.00067891 (~$51.79 each) ≈ 0.00135782 BTC (~$104) to close — same logic. Both legs are now capturing 85-95% of premium with only 8.29 days left and deltas of -0.16 and -0.058 (roughly 16% and 6% probability of finishing ITM) — the standard deep-OTM endgame where the bid/ask spread on a sub-$100 option swamps the residual time value. Nothing to redeploy into either: SEP26 has 8.3 days left and DEC26 cannot be struck until the Q4 floor is set on 09-25. Conclusion: ride both legs to 2026-09-25."
+    },
+    {
+      "title": "Under-written slice — accounting (live feed 01:07 UTC)",
+      "detail": "Balance (margin_balance) 14.59740925 BTC = $1,113,583 at the $76,286.36 index (equity 14.59222403 BTC; the two differ by unsettled session P&L). Hedge half: short BTC-25SEP26 5.111550258 BTC ($390,500 at mark $76,395.61, avg $66,818.50) + short BTC-25DEC26 1.292784376 BTC ($100,000 at mark $77,352.42, avg $82,497.79) = 6.404335 BTC = 43.87% of the book (target 50% = 7.298705 BTC — shortfall 0.894370 BTC, closed by the future roll below). Income half: 8.193075 BTC of spot, 5 BTC covered by short calls (3x 84k + 2x 86k), 3.193075 BTC bare — the slice that still needs the 78k-80k write (see THE WRITE, above). Currently 5 of 8.193 BTC written ≈ 61.0%."
+    },
+    {
+      "title": "Portfolio Greeks at 01:07 UTC",
+      "detail": "Account projected_delta_total -6.617579 BTC (options -0.21843; futures -6.404335; small residual from rounding/snapshot timing). Options theta +$124.61/day (84k leg $86.86 + 86k leg $37.75) — UP from yesterday's ~$121-range equivalent because both legs are now more time-decay-dominated as they sit deep OTM with 8.3 days left; still well short of what a fully-written 8.19 BTC income half would earn, which is the cost of carrying the 3.19 BTC bare. Options vega -$52.81/vol-point, options gamma -0.0001, options delta -0.21843. total_pl (cumulative) -0.60369 BTC = futures -0.65201 + options +0.04831 — the SEP26 leg remains the largest cumulative drag (as designed: it is the structural half-hedge and is meant to lose BTC-denominated value as spot rallies since inception). Margin: initial 1.14539 BTC, maintenance 0.55097 BTC, available_funds 13.45202 BTC — utilisation ~7.85%, no constraint on adding 3 short calls or executing the roll."
+    }
+  ],
+  "futures": [
+    {
+      "title": "NEXT-EXPIRY RADAR — future — ACTION (day 5 of the 12-DTE roll window, opened 2026-09-13). Front BTC-25SEP26 is 8.29 DTE. The SEP26→DEC26 roll has still NOT been executed.",
+      "detail": "Front short BTC-25SEP26 5.111550258 BTC ($390,500 notional), avg $66,818.50, mark $76,395.61, unrealised -0.7326 BTC cumulative — MTM is irrelevant: this is the structural half hedge and it exists to lose BTC-denominated value while spot rallies (the spot side gains the mirror amount). Never close it on mark-to-market. Roll plan (surfaced here; coordinates with the separate futures-swap-reminder task — NOT executed by this run): close the full $390,500 SEP26 leg and open ≈$464,572 of new DEC26 (≈6.005920 BTC at the $77,352.42 mark), bringing total DEC26 short to 7.298705 BTC = exactly 50.0% of the 14.597409 BTC book (the existing $100,000 / 1.292784 BTC DEC26 tranche is untouched, folded into the new total). Execute as a single calendar-spread ticket (sell DEC26 / buy SEP26) to avoid leg risk. If left alone, the SEP26 leg settles to the index at 08:00 UTC on 09-25 and the hedge half drops to ~8.9% (DEC26 only) until re-established — do not let it lapse into reset day, which is the same hour the option book expires. Per TEST A (below), there is no yield cost to waiting a few more days, so pick a liquid weekday rather than chasing basis."
+    },
+    {
+      "title": "Basis capture — live marks on the 2 held legs only (openclaw positions feed, 01:07 UTC). No independent OCT26/NOV26/MAR27 points available this run — see data_gaps for why the fuller curve (available on recent prior runs via a Chrome workaround) could not be refreshed today.",
+      "detail": "SEP26 (8.29 DTE, stub): mark $76,395.61 vs index $76,290.41 = +$105.20 (0.1379%, 6.07%/yr on the stub). DEC26 (99.29 DTE, the roll target): mark $77,352.42 vs index $76,290.41 = +$1,062.01 (1.392%, 5.12%/yr). Both basis points ROSE slightly overnight in dollar terms (contango firmed a touch with the spot rally), consistent with the normal contango response. Contango on the post-roll hedge half (7.298705 BTC) at 5.12%/yr ≈ 0.3737 BTC/yr ≈ $28,510/yr, i.e. ≈0.0934 BTC ≈ $7,127 per quarter — materially unchanged from recent runs."
+    },
+    {
+      "title": "Why the SEP26 short future shows -0.733 BTC cumulative, and the DEC26 tranche's cushion into the roll",
+      "detail": "SEP26 sold at $66,818.50 on 2026-06-26; BTC is now $76,395.61 (mark). The leg carries -0.7326 BTC of cumulative mark-to-market because the 5.11 BTC it hedges gained the same amount in USD terms since the reset — by design, the half-hedge gives up half the rally. The existing DEC26 $100,000 tranche is still +0.0806 BTC cumulative because it was sold at $82,497.79, above today's $77,352.42 mark — that tranche carries a $5,145/BTC cushion into the roll (down slightly from $5,753 a few sessions back, as the DEC26 mark firmed with spot)."
+    }
+  ],
+  "innovative": [
+    {
+      "title": "TEST A (repeat methodology, re-priced) — is there a cost to waiting a few more days on the roll? No: waiting still earns money, ≈$85, because the SEP26 stub remains the richer annualized carry.",
+      "detail": "Per dollar of notional over the remaining 8.29 days, holding the SEP26 short earns its full remaining basis of 0.1379%, while an equivalent DEC26 short over the same 8.29-day window earns 5.1175%/yr × 8.29/365 = 0.1162%. The stub is richer by 0.0217% = $390,500 × 0.000217 ≈ $85 in favour of waiting — consistent with recent sessions (+$72 to +$81), and the sign has been the same (stub richer) for several days running now that the curve is no longer humped. FINDING (unchanged conclusion, reconfirmed with today's live marks): the roll is a risk-management deadline, not a yield trade. The economics stay within roughly ±$100 either way session to session, so choose the execution day for liquidity and a single clean calendar ticket, not for the last few dollars of carry — but do not let the window run past ~3-4 DTE."
+    },
+    {
+      "title": "Structural rejections carried forward — not re-quantified this run due to the chain-data gap, but still standing",
+      "detail": "TEST B (deep-ITM short call as synthetic short future) and TEST C (OCT26 monthly bridge write for the bare income slice) were both quantified and permanently/session-rejected in prior runs on structural grounds (TEST B fails the HWM rule at every reset by construction; TEST C paid a materially worse annualized rate than the monthly SEP26 write). Today's feed only returned the 2 already-held SEP26 legs and the SEP26/DEC26 futures — no OCT26/DEC26 option chain was reachable (see data_gaps) — so neither test could be re-priced with live marks today. Their prior conclusions are not being asserted as re-verified; flagging for refresh once a chain source is available again."
+    }
+  ],
+  "data_gaps": []
+};
+/* EMBEDDED_ANALYSIS_END */
+
+  // ----- CSV parser -----------------------------------------------------------
+  function parseCsv(csvText) {
+    const lines = csvText.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length < 2) return [];
+    const headers = lines[0].replace(/^﻿/, '').split(',').map(h => h.trim());
+    return lines.slice(1).map(line => {
+      const values = []; let current = "", inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') inQuotes = !inQuotes;
+        else if (ch === ',' && !inQuotes) { values.push(current); current = ""; }
+        else current += ch;
+      }
+      values.push(current);
+      const row = {};
+      headers.forEach((h, idx) => row[h] = (values[idx] || '').trim());
+      return row;
+    });
+  }
+
+  async function fetchOpenclaw(path) {
+    const r = await fetch(OPENCLAW + path);
+    if (!r.ok) throw new Error("HTTP " + r.status + " on " + path);
+    return parseCsv(await r.text());
+  }
+
+  async function fetchDeribitAccount() {
+    try {
+      const r = await fetch(OPENCLAW + '/deribit/account?currency=BTC&extended=true');
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' on /deribit/account');
+      const data = await r.json();
+      return (data && data.account) ? data.account : null;
+    } catch (err) {
+      console.warn('Deribit account fetch failed', err);
+      return null;
+    }
+  }
+
+  async function fetchDeribitPositions(kind) {
+    const r = await fetch(OPENCLAW + '/deribit/positions?kind=' + encodeURIComponent(kind));
+    if (!r.ok) throw new Error("HTTP " + r.status + " on /deribit/positions?kind=" + kind);
+    const data = await r.json();
+    if (!data || !Array.isArray(data.positions)) return [];
+    return data.positions;
+  }
+
+  function summarizeDeribitPositions(items) {
+    const list = Array.isArray(items) ? items : [];
+    let futures = 0;
+    let options = 0;
+    let notional = 0;
+    let totalPnl = 0;
+    let netDelta = 0;
+    let initialMargin = 0;
+    let vegaTotal = 0;
+    let thetaDay = 0;
+    let vegaCount = 0;
+    let thetaCount = 0;
+    let spot = null;
+    let minDte = null;
+    let largest = null;
+
+    const months = {
+      JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
+      JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11,
+    };
+
+    function instrumentDte(name) {
+      if (!name) return null;
+      const m = String(name).match(/-(\d{1,2})([A-Z]{3})(\d{2})(?:-|$)/);
+      if (!m) return null;
+      const day = Number(m[1]);
+      const mon = months[m[2]];
+      const year = 2000 + Number(m[3]);
+      if (!Number.isFinite(day) || mon === undefined || !Number.isFinite(year)) return null;
+      const expiry = Date.UTC(year, mon, day, 8, 0, 0);
+      const now = Date.now();
+      return Math.max(0, Math.round((expiry - now) / 86400000));
+    }
+
+    list.forEach((p) => {
+      const kind = String(p.kind || 'future').toLowerCase();
+      const size = Math.abs(Number(p.size) || 0);
+      const indexPrice = Number(p.index_price || 0);
+      const pnl = Number(p.total_profit_loss || 0);
+      const exposure = size * (indexPrice || 0);
+      const delta = Number(p.delta);
+      const im = Number(p.initial_margin);
+      const vega = Number(p.vega);
+      const theta = Number(p.theta);
+
+      if (spot === null && Number.isFinite(indexPrice) && indexPrice > 0) {
+        spot = indexPrice;
+      }
+
+      if (kind === 'option') options += 1; else futures += 1;
+      notional += exposure;
+      totalPnl += pnl;
+      if (Number.isFinite(delta)) netDelta += delta;
+      if (Number.isFinite(im)) initialMargin += im;
+      if (Number.isFinite(vega)) {
+        vegaTotal += vega;
+        vegaCount += 1;
+      }
+      if (Number.isFinite(theta)) {
+        thetaDay += theta;
+        thetaCount += 1;
+      }
+
+      const dte = instrumentDte(p.instrument_name);
+      if (dte !== null && (minDte === null || dte < minDte)) {
+        minDte = dte;
+      }
+
+      if (!largest || exposure > largest.exposure) {
+        largest = {
+          instrument_name: p.instrument_name || '—',
+          exposure,
+        };
+      }
+    });
+
+    return {
+      futures,
+      options,
+      count: list.length,
+      notional,
+      totalPnl,
+      netDelta,
+      initialMargin,
+      vegaTotal,
+      thetaDay,
+      hasVega: vegaCount > 0,
+      hasTheta: thetaCount > 0,
+      spot,
+      daysToExpiry: minDte,
+      largest,
+    };
+  }
+
+  async function loadPositions() {
+    try {
+      const r = await fetch("./positions.json?_=" + Date.now());
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    } catch (err) {
+      console.warn("positions.json fetch failed (file:// or Squarespace). Using embedded snapshot.", err);
+      return EMBEDDED_POSITIONS;
+    }
+  }
+
+  // Embedded fallback — kept in sync with positions.json (snapshot 2026-06-22 live).
+  const EMBEDDED_POSITIONS = {
+    snapshot_utc: "2026-06-22T06:20:20Z",
+    source: "openclaw /deribit live (account + positions)",
+    fund: "CMFDH II",
+    quarter: "Q2 2026",
+    expiry: "2026-06-26",
+    btc_aggregate: { net_delta_btc: -8.2103, delta_btc: -8.2103, gamma: 0.0, vega: -2.0, theta_per_day: 10.0, rho: -0.5, im_btc: 0.3471, mm_btc: 0.1778, rspl_btc: 0.0, uspl_btc: -0.1322, pnl_btc: 0.2615 },
+    positions: [
+      { instrument: "BTC-25SEP26", type: "future", amount_usd: -531000, value_btc: -8.2084, avg_price_usd: 66818.5, mark_price_usd: 64689.98, index_price_usd: 64051.45, basis_usd: 638.53, delta_btc: -8.2084, pnl_btc: 0.2615, roi_pct: 78.8, im_btc: 0.3317, mm_btc: 0.1675 },
+      { instrument: "BTC-26JUN26-78000-C", type: "option", right: "call", strike_usd: 78000, amount_contracts: -0.1, avg_price_btc: 0.0006, mark_price_btc: 0.00063742, delta_btc: -0.00189, gamma: 0.0, vega: -2.0, theta_per_day: 10.0, rho: -0.5, pnl_btc: 0.0, roi_pct: 1.7, im_btc: 0.0101, mm_btc: 0.0076 },
+    ],
+  };
+
+  function fmtBtc(x, dp=4) { return (x>=0?'+':'') + x.toFixed(dp) + ' BTC'; }
+  function fmtUsd(x, dp=0) { return (x>=0?'+$':'-$') + Math.abs(x).toLocaleString(undefined, {minimumFractionDigits: dp, maximumFractionDigits: dp}); }
+  function fmtPct(x, dp=1) { return (x>=0?'+':'') + (x*100).toFixed(dp) + '%'; }
+  // Deribit feed timestamp: "2026-06-04 04:58:32 UTC" (always shows date)
+  function fmtFeedTs(d) {
+    if (!d || isNaN(d)) return '—';
+    const p = n => String(n).padStart(2, '0');
+    return `${d.getUTCFullYear()}-${p(d.getUTCMonth()+1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())} UTC`;
+  }
+  function fmtAge(ms) {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    if (s < 60) return s + 's ago';
+    const m = Math.floor(s / 60);
+    if (m < 60) return m + 'm ago';
+    const h = Math.floor(m / 60);
+    if (h < 24) return h + 'h ' + (m % 60) + 'm ago';
+    const d = Math.floor(h / 24);
+    return d + 'd ' + (h % 24) + 'h ago';
+  }
+
+  // ----- Snapshot bar ---------------------------------------------------------
+  function renderSnapshotBar() {
+    const summary = STATE.deribitSummary;
+    const acct = STATE.deribitAccount;
+    const acctDelta = acct && Number.isFinite(Number(acct.options_delta)) ? Number(acct.options_delta) : null;
+    const acctTheta = acct && Number.isFinite(Number(acct.options_theta)) ? Number(acct.options_theta) : null;
+    const acctVega = acct && Number.isFinite(Number(acct.options_vega)) ? Number(acct.options_vega) : null;
+    const acctTotalPl = acct && Number.isFinite(Number(acct.total_pl)) ? Number(acct.total_pl) : null;
+    if (summary) {
+      const spotVal = summary.spot || STATE.btcSpot;
+      $('btc-spot').textContent = spotVal ? '$' + Number(spotVal).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '—';
+
+      // Net delta = sum of per-position `delta` from /deribit/positions
+      // (futures + options). NOT account options_delta, which excludes futures.
+      const netDelta = Number.isFinite(summary.netDelta) ? summary.netDelta : acctDelta;
+      const nd = $('net-delta');
+      nd.textContent = netDelta !== null ? netDelta.toFixed(4) : '—';
+      nd.className = 'val ' + ((netDelta || 0) >= 0 ? 'pos' : 'neg');
+
+      $('theta-day').textContent = acctTheta !== null ? String(acctTheta) : '-';
+
+      $('vega-val').textContent = acctVega !== null ? String(acctVega) : '-';
+
+      STATE.daysToOurExpiry = summary.daysToExpiry;
+      $('dte').textContent = summary.daysToExpiry === null ? '-' : (summary.daysToExpiry + 'd');
+
+      $('im-val').textContent = Number.isFinite(summary.initialMargin) ? summary.initialMargin.toFixed(4) : '-';
+
+      // Quarter-to-date P/L = live equity − quarter-opening balance (NOT position
+      // total_pl, which is lifetime-since-entry and partly earned last quarter).
+      const eqNow = acct && Number.isFinite(Number(acct.equity)) ? Number(acct.equity)
+        : (acct && Number.isFinite(Number(acct.margin_balance)) ? Number(acct.margin_balance) : null);
+      const qtrPl = eqNow !== null ? eqNow - QUARTER_OPEN_BTC : null;
+      const pn = $('pnl-val');
+      pn.textContent = qtrPl !== null ? ((qtrPl >= 0 ? '+' : '') + qtrPl.toFixed(4)) : '-';
+      pn.className = 'val ' + ((qtrPl || 0) >= 0 ? 'pos' : 'neg');
+
+      // Margin Balance = margin_balance (BTC) × spot
+      const mb = acct && Number.isFinite(Number(acct.margin_balance)) ? Number(acct.margin_balance) : null;
+      const spot = summary.spot || STATE.btcSpot;
+      const mbUsd = (mb !== null && spot) ? mb * spot : null;
+      $('account-balance-btc-usd').textContent = mb !== null
+        ? (mbUsd !== null
+          ? (mb.toFixed(4) + ' / $' + Math.round(mbUsd).toLocaleString())
+          : (mb.toFixed(4) + ' / —'))
+        : '—';
+
+      $('op-count').textContent = summary.count.toLocaleString();
+      $('op-futures').textContent = summary.futures.toLocaleString();
+      $('op-options').textContent = summary.options.toLocaleString();
+      // $('op-notional').textContent = '$' + Math.round(summary.notional).toLocaleString();
+      $('op-total-pnl').textContent = summary.totalPnl >= 0 ? '+' + summary.totalPnl.toFixed(6) : summary.totalPnl.toFixed(6);
+      $('op-total-pnl').className = 'val ' + (summary.totalPnl >= 0 ? 'pos' : 'neg');
+      // $('op-largest').textContent = summary.largest
+      //   ? `${summary.largest.instrument_name} · $${Math.round(summary.largest.exposure).toLocaleString()}`
+      //   : '—';
+    } else {
+      $('btc-spot').textContent = STATE.btcSpot ? '$' + STATE.btcSpot.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '—';
+      $('net-delta').textContent = acctDelta !== null ? String(acctDelta) : '-';
+      $('theta-day').textContent = acctTheta !== null ? String(acctTheta) : '-';
+      $('vega-val').textContent = acctVega !== null ? String(acctVega) : '-';
+      $('dte').textContent = '-';
+      $('im-val').textContent = '-';
+      const eqNow2 = acct && Number.isFinite(Number(acct.equity)) ? Number(acct.equity)
+        : (acct && Number.isFinite(Number(acct.margin_balance)) ? Number(acct.margin_balance) : null);
+      const qtrPl2 = eqNow2 !== null ? eqNow2 - QUARTER_OPEN_BTC : null;
+      $('pnl-val').textContent = qtrPl2 !== null ? ((qtrPl2 >= 0 ? '+' : '') + qtrPl2.toFixed(4)) : '-';
+      $('pnl-val').className = 'val ' + ((qtrPl2 || 0) >= 0 ? 'pos' : 'neg');
+      $('account-balance-btc-usd').textContent = '-';
+      $('op-count').textContent = '-';
+      $('op-futures').textContent = '-';
+      $('op-options').textContent = '-';
+      // $('op-notional').textContent = '-';
+      $('op-total-pnl').textContent = '-';
+      // $('op-largest').textContent = '-';
+    }
+  }
+
+  // ----- Position cards -------------------------------------------------------
+  function renderPositions() {
+    const items = STATE.deribitPositions || [];
+    if (!items.length) {
+      $('positions-container').innerHTML = '<p style="color:var(--gs-muted);">No open positions returned by /deribit/positions.</p>';
+      return;
+    }
+
+    const num = (v, dp = 4) => Number.isFinite(Number(v)) ? Number(v).toFixed(dp) : '—';
+    const usd = (v, dp = 2) => Number.isFinite(Number(v))
+      ? ('$' + Number(v).toLocaleString(undefined, { minimumFractionDigits: dp, maximumFractionDigits: dp }))
+      : '—';
+    const moneyClass = (v) => Number(v) >= 0 ? 'edge-pos' : 'edge-neg';
+    const asPct = (v, dp = 2) => Number.isFinite(Number(v)) ? ((Number(v) >= 0 ? '+' : '') + Number(v).toFixed(dp) + '%') : '—';
+
+    const html = items.map((p) => {
+      const kind = String(p.kind || 'future').toLowerCase();
+      const dir = String(p.direction || '').toLowerCase() || (Number(p.size) < 0 ? 'sell' : 'buy');
+      const sideLabel = dir === 'sell' ? 'SHORT' : 'LONG';
+      const labelCls = kind === 'option' ? 'option' : 'future';
+      const instrument = String(p.instrument_name || '');
+      const parts = instrument.split('-');
+      const strike = Number(parts[2]);
+      const spotNow = Number(p.index_price || STATE.btcSpot || 0);
+      const avgEntry = Number(p.average_price);
+      const mark = Number(p.mark_price);
+      const avgEntryUsd = kind === 'option' ? (Number.isFinite(avgEntry) && spotNow ? avgEntry * spotNow : null) : avgEntry;
+      const markUsd = kind === 'option' ? (Number.isFinite(mark) && spotNow ? mark * spotNow : null) : mark;
+      const pnl = Number(p.total_profit_loss || 0);
+      const roi = Number(p.initial_margin) ? (pnl / Math.abs(Number(p.initial_margin))) * 100 : null;
+
+      if (kind === 'option') {
+        const moneyness = (Number.isFinite(strike) && spotNow > 0)
+          ? ((spotNow / strike - 1) * 100)
+          : null;
+        const moneyStr = moneyness === null
+          ? '—'
+          : Math.abs(moneyness) < 1.5
+            ? `<span style="color:var(--gs-warn)">ATM ${moneyness>=0?'+':''}${moneyness.toFixed(2)}%</span>`
+            : moneyness < 0
+              ? `<span class="edge-pos">OTM ${moneyness.toFixed(2)}%</span>`
+              : `<span class="edge-neg">ITM +${moneyness.toFixed(2)}%</span>`;
+
+        return `<div class="pos-card option">
+          <div class="head">
+            <div><span class="label option">${sideLabel} CALL</span><span class="name">${instrument || '—'}</span></div>
+            <div class="when">${num(p.size, 2)} contracts</div>
+          </div>
+          <div class="grid">
+            <div><span class="k">Strike</span>${Number.isFinite(strike) ? ('$' + strike.toLocaleString()) : '—'}</div>
+            <div><span class="k">Avg Entry (USD)</span>${usd(avgEntryUsd, 2)}</div>
+            <div><span class="k">Mark (USD)</span>${usd(markUsd, 2)}</div>
+            <div><span class="k">Moneyness</span>${moneyStr}</div>
+            <div><span class="k">&Delta; (BTC)</span>${num(p.delta, 4)}</div>
+            <div><span class="k">Theta/d</span>${num(p.theta, 2)}</div>
+            <div><span class="k">Vega</span>${num(p.vega, 1)}</div>
+            <div><span class="k">PnL (BTC)</span><span class="${moneyClass(pnl)}">${fmtBtc(pnl, 4)}</span></div>
+            <div><span class="k">ROI %</span><span class="${moneyClass(roi||0)}">${roi === null ? '—' : asPct(roi, 2)}</span></div>
+          </div>
+        </div>`;
+      }
+
+      const drift = (Number.isFinite(avgEntry) && avgEntry !== 0 && spotNow)
+        ? ((spotNow - avgEntry) / avgEntry) * 100
+        : null;
+
+      return `<div class="pos-card ${labelCls}">
+        <div class="head">
+          <div><span class="label ${labelCls}">${sideLabel} FUTURE</span><span class="name">${instrument || '—'}</span></div>
+          <div class="when">amount $${num(p.size, 0)}</div>
+        </div>
+        <div class="grid">
+          <div><span class="k">Avg Entry</span>${usd(avgEntry, 2)}</div>
+          <div><span class="k">Mark</span>${usd(mark, 2)}</div>
+          <div><span class="k">Spot now</span>${spotNow ? ('$'+spotNow.toLocaleString(undefined,{maximumFractionDigits:0})) : '—'}</div>
+          <div><span class="k">Drift vs entry</span><span class="${drift === null ? '' : moneyClass(drift)}">${drift === null ? '—' : asPct(drift, 2)}</span></div>
+          <div><span class="k">&Delta; (BTC)</span>${num(p.delta, 4)}</div>
+          <div><span class="k">PnL (BTC)</span><span class="${moneyClass(pnl)}">${fmtBtc(pnl, 4)}</span></div>
+          <div><span class="k">ROI %</span><span class="${moneyClass(roi||0)}">${roi === null ? '—' : asPct(roi, 2)}</span></div>
+          <div><span class="k">IM / MM</span>${num(p.initial_margin, 4)} / ${num(p.maintenance_margin, 4)}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    $('positions-container').innerHTML = html;
+  }
+
+  // ----- AI tabs --------------------------------------------------------------
+  function renderAi() {
+    const body = $('ai-body');
+    switch (STATE.activeTab) {
+      case 'daily':    body.innerHTML = aiDaily(); break;
+      case 'greeks':   body.innerHTML = aiGreeks(); break;
+      case 'scenario': body.innerHTML = aiScenario(); break;
+      case 'calendar': body.innerHTML = aiCalendar(); break;
+      case 'strategy': body.innerHTML = aiStrategy(); break;
+    }
+  }
+
+  function aiDaily() {
+    const a = STATE.analysis || EMBEDDED_ANALYSIS;
+    if (!a) return '<p style="color:var(--gs-muted);">No income run available yet.</p>';
+    const item = (x) => `<li style="margin-bottom:8px;"><strong style="color:var(--gs-navy);">${x.title}</strong> — ${x.detail}</li>`;
+    const list = (arr) => `<ul style="margin:4px 0 14px; padding-left:20px; font-size:12.5px; line-height:1.65;">${(arr||[]).map(item).join('')}</ul>`;
+    const hwm = a.hwm_check || {};
+    const hwmBadge = hwm.pass
+      ? `<span style="color:var(--gs-pos); font-weight:700;">✓ HWM compliant</span>`
+      : `<span style="color:var(--gs-neg); font-weight:700;">✗ HWM BREACH</span>`;
+    return `<h3>${a.run_label || 'Weekday income run'} <span style="color:var(--gs-muted); font-weight:400; font-size:11px;">HWM floor $${(a.hwm_usd||QUARTER_HWM_USD).toLocaleString()} &middot; spot at run $${(a.spot_usd||0).toLocaleString()}</span></h3>
+      <div class="verdict" style="margin-top:0; margin-bottom:14px;"><strong>Headline:</strong> ${a.headline || '—'}</div>
+      <p style="margin-bottom:4px;"><strong>HWM rule check:</strong> ${hwmBadge} — ${hwm.detail || ''}</p>
+      <h3 style="margin-top:14px;">Covered-call half (income, reset quarterly)</h3>${list(a.covered_call)}
+      <h3>Contango / futures half (standing 1/2 hedge)</h3>${list(a.futures)}
+      <h3>Innovative trades tested this run</h3>${list(a.innovative)}
+      ${(a.data_gaps && a.data_gaps.length) ? `<h3>Data gaps</h3><ul style="margin:4px 0 0; padding-left:20px; font-size:11.5px; color:var(--gs-muted); line-height:1.6;">${a.data_gaps.map(g=>`<li>${g}</li>`).join('')}</ul>` : ''}
+      <p style="font-size:10.5px; color:var(--gs-muted); margin-top:12px;">Recommendations only — no execution. Refreshed every weekday 07:00 Bali by Charlie from live openclaw data.</p>`;
+  }
+
+  function aiGreeks() {
+    const a = STATE.positions.btc_aggregate;
+    const spot = STATE.btcSpot;
+    // btc_aggregate is the DERIVATIVE leg only; add the spot-long book (latest fund balance) for the whole-book net delta.
+    const balData = STATE.balances || EMBEDDED_BALANCES;
+    let spotLongBtc = null;
+    if (balData && Array.isArray(balData.rows)) {
+      const r = balData.rows.filter(x => Number.isFinite(x.btc)).slice().sort((x, y) => (x.date < y.date ? 1 : -1));
+      if (r.length) spotLongBtc = r[0].btc;
+    }
+    const hedgeDelta = a.delta_btc;
+    const netBookDelta = spotLongBtc != null ? spotLongBtc + hedgeDelta : a.net_delta_btc;
+    const equiv1pctMove = spot ? netBookDelta * spot * 0.01 : null;
+    const verdict = spotLongBtc != null
+      ? `Net <strong>long delta ${netBookDelta>=0?'+':''}${netBookDelta.toFixed(2)} BTC</strong> (≈ ${spot ? fmtUsd(netBookDelta*spot,0) : '—'}) — the ${spotLongBtc.toFixed(2)} BTC spot-long book minus the ${Math.abs(hedgeDelta).toFixed(2)} BTC short SEP26 future (the standing ½ hedge). So the fund still <strong>gains as BTC rises</strong>, at roughly half an unhedged book, while the hedge leg alone (${hedgeDelta.toFixed(2)} BTC) is what halves the downside — this is the same net long the Scenario tab models. The covered-call income engine is idle in the drawdown (only a near-dead Jun 26 78k call remains), so portfolio <strong>vega and theta are negligible</strong> — little option premium left to decay. Current carry is the SEP26 futures contango (basis converging to index), not option theta; the Jun 26 reset drops the HWM floor to spot and reopens near-money call writing, which restores positive theta.`
+      : `Spot-long balance unavailable from the ledger, so only the derivative leg (${hedgeDelta.toFixed(2)} BTC, the ½ hedge) is shown below until the balance feed returns.`;
+    return `<h3>Greeks &amp; risk summary <span style="color:var(--gs-muted); font-weight:400; font-size:11px;">whole book = spot-long + derivatives &middot; greeks from latest TigerEx CSV</span></h3>
+      <div class="kv">
+        <div><div class="k">Net &Delta; (whole book)</div><div class="v ${netBookDelta>=0?'pos':'neg'}">${(netBookDelta>=0?'+':'')+netBookDelta.toFixed(4)} BTC</div></div>
+        <div><div class="k">&nbsp;&middot; spot-long book</div><div class="v">${spotLongBtc!=null?('+'+spotLongBtc.toFixed(4)+' BTC'):'—'}</div></div>
+        <div><div class="k">&nbsp;&middot; hedge &Delta; (derivatives)</div><div class="v ${hedgeDelta>=0?'pos':'neg'}">${hedgeDelta.toFixed(4)} BTC</div></div>
+        <div><div class="k">Net &Delta; &times; spot (USD)</div><div class="v ${netBookDelta>=0?'pos':'neg'}">${spot ? fmtUsd(netBookDelta * spot, 0) : '—'}</div></div>
+        <div><div class="k">&Gamma; (gamma)</div><div class="v">${a.gamma.toFixed(6)}</div></div>
+        <div><div class="k">Vega</div><div class="v ${a.vega>=0?'pos':'neg'}">${a.vega.toFixed(2)}</div></div>
+        <div><div class="k">Theta / day</div><div class="v ${a.theta_per_day>=0?'pos':'neg'}">${(a.theta_per_day>=0?'+':'')+a.theta_per_day.toFixed(2)}</div></div>
+        <div><div class="k">Theta / 30d</div><div class="v ${a.theta_per_day>=0?'pos':'neg'}">${(a.theta_per_day>=0?'+':'')+(a.theta_per_day*30).toFixed(0)}</div></div>
+        <div><div class="k">IM / MM (BTC)</div><div class="v">${a.im_btc.toFixed(4)} / ${a.mm_btc.toFixed(4)}</div></div>
+        <div><div class="k">Net &Delta;-equiv on 1% spot move</div><div class="v ${equiv1pctMove<0?'neg':'pos'}">${equiv1pctMove===null?'—':fmtUsd(equiv1pctMove,0)}</div></div>
+      </div>
+      <div class="verdict">${verdict}</div>`;
+  }
+
+  function aiScenario() {
+    const a = STATE.positions.btc_aggregate;
+    const spot = STATE.btcSpot;
+    if (!spot) return '<h3>Scenario analysis</h3><p style="color:var(--gs-muted);">Waiting for BTC spot from Deribit...</p>';
+    // Spot-long BTC book — NOT in btc_aggregate (which is the derivative leg only). Pull the latest fund balance.
+    const balData = STATE.balances || EMBEDDED_BALANCES;
+    let spotLongBtc = null;
+    if (balData && Array.isArray(balData.rows)) {
+      const r = balData.rows.filter(x => Number.isFinite(x.btc)).slice().sort((x, y) => (x.date < y.date ? 1 : -1));
+      if (r.length) spotLongBtc = r[0].btc;
+    }
+    const netLongBtc = spotLongBtc != null ? spotLongBtc + a.delta_btc : null;
+    const moves = [-30, -20, -10, -5, 0, 5, 10, 20, 30];
+    const rows = moves.map(pct => {
+      const newSpot = spot * (1 + pct/100);
+      const dSpot = newSpot - spot;
+      const derivDeltaUsd = a.delta_btc * spot * (pct/100);
+      let intrinsicShortCall = 0;
+      STATE.positions.positions.forEach(p => {
+        if (p.type === 'option' && p.right === 'call') {
+          const intr = Math.max(0, newSpot - p.strike_usd);
+          intrinsicShortCall += p.amount_contracts * intr / spot;
+        }
+      });
+      const intrinsicUsd = intrinsicShortCall * spot;
+      const derivUsd = derivDeltaUsd + intrinsicUsd;
+      const derivBtc = newSpot ? derivUsd / newSpot : 0;
+      const hedgeTodayUsd = derivBtc * spot;   // hedge BTC P&L valued at TODAY's spot — reveals the inverse-future convexity
+      const spotLongUsd = spotLongBtc != null ? spotLongBtc * dSpot : null;
+      const wholeUsd = spotLongUsd != null ? spotLongUsd + derivUsd : null;
+      return { pct, newSpot, derivUsd, derivBtc, hedgeTodayUsd, wholeUsd, intrinsicUsd };
+    });
+    const fmtBtc = (v) => (v >= 0 ? '+' : '') + v.toFixed(4) + ' ₿';
+    // Round-trip tally — models the drawdown playbook: at a -30% bottom we BUY BACK futures so the short again
+    // covers only ½ of the (now-smaller) dollar portfolio, banking the hedge gain and carrying a lighter short
+    // into the rebound. Reading the rows top→bottom traces BTC bottoming at -30%, then recovering and rising.
+    // Whole_RT(m) = V0·[h·d² + (1 − h(1−d))·m] + short-call intrinsic, where h = dollar hedge fraction (≈½), d = drop.
+    const RB_DROP = 0.30;
+    const hedgeFrac = spotLongBtc ? Math.abs(a.delta_btc) / spotLongBtc : null;
+    const V0 = spotLongBtc != null ? spotLongBtc * spot : null;
+    const rtCalc = (pct) => (V0 != null && hedgeFrac != null)
+      ? V0 * (hedgeFrac*RB_DROP*RB_DROP + (1 - hedgeFrac*(1-RB_DROP))*(pct/100)) + (rows.find(r => r.pct === pct)?.intrinsicUsd || 0)
+      : null;
+    const tableRows = rows.map(r => {
+      const cls = r.pct === 0 ? 'spot' : '';
+      const wCls = (r.wholeUsd || 0) >= 0 ? 'pos' : 'neg';
+      const hCls = (r.hedgeTodayUsd || 0) >= 0 ? 'pos' : 'neg';
+      const dbCls = r.derivBtc >= 0 ? 'pos' : 'neg';
+      const duCls = r.derivUsd >= 0 ? 'pos' : 'neg';
+      const wholeCell = r.wholeUsd != null ? `<td class="${wCls}">${fmtUsd(r.wholeUsd,0)}</td>` : `<td style="color:var(--gs-muted);">—</td>`;
+      const rtUsd = rtCalc(r.pct);
+      const rtCls = (rtUsd || 0) >= 0 ? 'pos' : 'neg';
+      const rtCell = rtUsd != null ? `<td class="${rtCls}">${fmtUsd(rtUsd,0)}</td>` : `<td style="color:var(--gs-muted);">—</td>`;
+      return `<tr class="${cls}"><td>${r.pct>0?'+':''}${r.pct}%</td><td>$${r.newSpot.toLocaleString(undefined,{maximumFractionDigits:0})}</td>${wholeCell}<td class="${hCls}">${fmtUsd(r.hedgeTodayUsd,0)}</td><td class="${dbCls}">${fmtBtc(r.derivBtc)}</td><td class="${duCls}">${fmtUsd(r.derivUsd,0)}</td>${rtCell}</tr>`;
+    }).join('');
+    const callBite = rows.find(r => r.pct > 0 && r.intrinsicUsd < 0);
+    const perPct = fmtUsd(Math.abs(a.delta_btc*spot*0.01),0);
+    const dn = rows.find(r => r.pct === -30), up = rows.find(r => r.pct === 30);
+    const asymTxt = (dn && up) ? `at &plusmn;30% it is worth <strong>${fmtUsd(dn.hedgeTodayUsd,0)}</strong> of protection on the way down but only <strong>${fmtUsd(Math.abs(up.hedgeTodayUsd),0)}</strong> of give-up on the way up` : 'asymmetric in the fund’s favour';
+    const netTxt = netLongBtc != null ? `${netLongBtc>=0?'+':''}${netLongBtc.toFixed(2)} BTC net long` : 'net long after the hedge';
+    const bookTxt = spotLongBtc != null ? spotLongBtc.toFixed(2) : '—';
+    const verdict = `Whole-portfolio P&amp;L = the long BTC book (${bookTxt} BTC) revalued at the new spot, plus the hedge. After the ½ hedge the fund is <strong>${netTxt}</strong>, so it still <strong>makes dollars as BTC rises</strong> — about half of an unhedged book. <strong>Hedge benefit (today’s $)</strong> values the hedge’s BTC P&amp;L at today’s spot: because the coin-margined SEP26 future is <strong>convex</strong>, ${asymTxt} — a real asymmetry that compounds the BTC stack. (The Derivative &Delta;P&amp;L (USD) column is the same hedge marked at the <em>scenario</em> price, which is linear by construction; the convex edge only shows once the gain is held as BTC.)${callBite ? ` The short call adds minor extra drag above +${callBite.pct}% ($${callBite.newSpot.toLocaleString(undefined,{maximumFractionDigits:0})}).` : ''} Linear &Delta; + at-expiry intrinsic; read as downside-protection asymmetry, not full upside participation. The <strong>Round-trip $ tally</strong> column models the drawdown playbook: when BTC bottoms ~30% down, the short-future hedge has cushioned the book, and we <strong>buy back futures</strong> so the short again covers only &frac12; of the now-smaller dollar portfolio &mdash; banking the hedge gain and carrying a lighter short into the rebound. Read top-to-bottom it traces BTC bottoming at &minus;30%, then recovering and rising: a full round trip back to today&rsquo;s price leaves the book <strong>${V0!=null?fmtUsd(rtCalc(0),0):'&mdash;'}</strong>, and a recovery to +30% reaches <strong>${V0!=null?fmtUsd(rtCalc(30),0):'&mdash;'}</strong>. The gap over the static &frac12;-hedge figure is the profit harvested by re-buying at the low.`;
+    return `<h3>Scenario analysis <span style="color:var(--gs-muted); font-weight:400; font-size:11px;">spot moves vs current $${spot.toLocaleString(undefined,{maximumFractionDigits:0})} &middot; whole portfolio &middot; hedge convexity in today’s $ &middot; linear &Delta; + at-expiry intrinsic</span></h3>
+      <div class="table-scroll"><table class="scen-table">
+        <thead><tr><th>Move</th><th>BTC spot</th><th>Whole portfolio &Delta;P&amp;L (USD)</th><th>Hedge benefit (today&rsquo;s $)</th><th>Derivative &Delta;P&amp;L (BTC)</th><th>Derivative &Delta;P&amp;L (USD)</th><th>Round-trip $ tally <span style="color:var(--gs-muted); font-weight:400; font-size:10px;">bottom at &minus;30%, rebuy futures to &frac12;, then recover &rarr; this level</span></th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table></div>
+      <div class="verdict">${verdict}</div>`;
+  }
+
+  function aiCalendar() {
+    const dte = STATE.daysToOurExpiry;
+    const a = STATE.positions.btc_aggregate;
+    const spot = STATE.btcSpot;
+    let stage, action;
+    if (dte === null) { stage='—'; action='Waiting on data'; }
+    else if (dte > 75) { stage = 'Mid-quarter'; action = 'Hold. With the income engine idle, carry comes from the short SEP26 future\'s contango — let time pass and recompute annualized basis weekly.'; }
+    else if (dte > 45) { stage = 'Late mid-quarter'; action = 'Hold the SEP26 hedge. Start watching the DEC26 basis — roll SEP→DEC only if it annualizes materially above the SEP carry. Resume call writing only at/above the HWM floor.'; }
+    else if (dte > 21) { stage = 'Pre-reset window'; action = 'Approaching the quarterly reset. Stage the next call ladder: after the HWM resets to spot, sell ~25–32 delta SEP26 calls (strike ≥ new floor) against the unhedged long half.'; }
+    else if (dte > 7)  { stage = 'Final pre-reset'; action = 'Let the residual 78k call decay to expiry — don\'t pay fees to buy back a sub-dollar mark. Hold the SEP26 hedge; prep the post-reset call ladder.'; }
+    else { stage = 'Reset week'; action = 'Quarterly reset on/around Jun 26: let the 78k call expire worthless, drop the HWM floor to spot, then reopen near-money SEP26 call writing on the unhedged long half. Keep the SEP26 short future as the standing ½ hedge.'; }
+    const rollNotes = [];
+    STATE.positions.positions.forEach(p => {
+      if (p.type !== 'option') return;
+      const distance = spot ? ((p.strike_usd - spot) / spot * 100) : null;
+      if (distance !== null) {
+        const note = distance < 3 ? `<strong style="color:var(--gs-warn);">⚠ ${p.instrument}: only ${distance.toFixed(2)}% OTM — tight. Consider rolling up or buying back.</strong>`
+          : distance < 8 ? `${p.instrument}: ${distance.toFixed(2)}% OTM, watch.`
+          : `${p.instrument}: ${distance.toFixed(2)}% OTM, comfortable.`;
+        rollNotes.push(note);
+      }
+    });
+    return `<h3>Calendar &amp; roll plan <span style="color:var(--gs-muted); font-weight:400; font-size:11px;">${dte}d to next expiry &middot; ${stage}</span></h3>
+      <div class="kv">
+        <div><div class="k">Days to expiry</div><div class="v">${dte} d</div></div>
+        <div><div class="k">Stage</div><div class="v">${stage}</div></div>
+        <div><div class="k">Theta to capture</div><div class="v pos">${(a.theta_per_day*dte).toFixed(0)} (cum.)</div></div>
+        <div><div class="k">Quarterly cadence</div><div class="v">Q2 → Q3 swap planned end-JUN</div></div>
+      </div>
+      <p><strong>Action:</strong> ${action}</p>
+      <ul style="margin:6px 0 0; padding-left:20px; font-size:12.5px; line-height:1.65;">
+        ${rollNotes.map(n => `<li>${n}</li>`).join('')}
+      </ul>`;
+  }
+
+  function aiStrategy() {
+    const a = STATE.positions.btc_aggregate;
+    const spot = STATE.btcSpot;
+    const checks = [];
+    checks.push({ label: 'Not strictly zero-delta (drift allowed)', pass: true,
+      detail: `Net &Delta; = ${a.net_delta_btc.toFixed(2)} BTC short → ${spot ? '$'+(a.net_delta_btc*spot).toLocaleString(undefined,{maximumFractionDigits:0}) : '—'} short exposure. Aligned with CMFDH II spec.` });
+    checks.push({ label: 'Quarterly rebalance cadence', pass: STATE.daysToOurExpiry !== null && STATE.daysToOurExpiry < 95,
+      detail: `Next expiry/reset → ${STATE.daysToOurExpiry}d out. Sits inside the Q2 2026 window; HWM resets to spot on/around Jun 26.` });
+    checks.push({ label: 'Carry-positive (contango + option theta)', pass: true,
+      detail: `Income engine idle in the drawdown, so option theta is ~nil; current carry is the short SEP26 future's contango — basis converges to index in the fund's favor. Near-money call theta resumes after the Jun 26 HWM reset.` });
+    checks.push({ label: 'Downside hedge present', pass: a.net_delta_btc < 0,
+      detail: 'Short SEP26 future provides the standing ½ delta hedge; only a residual near-dead 78k call remains. Mirrors Q1 2026 outperformance pattern (BTC −22%, fund −10% gross).' });
+    const heldOpts = (STATE.deribitPositions || []).filter(p => String(p.kind||'').toLowerCase() === 'option');
+    const belowHwm = heldOpts.filter(p => {
+      const s = Number(String(p.instrument_name||'').split('-')[2]);
+      return Number.isFinite(s) && s < QUARTER_HWM_USD;
+    });
+    checks.push({ label: `Short-call strikes ≥ quarter HWM ($${QUARTER_HWM_USD.toLocaleString()})`, pass: belowHwm.length === 0,
+      detail: belowHwm.length === 0
+        ? `All ${heldOpts.length} held option strike(s) at or above quarter-start BTC — assignment can never sell BTC below the quarter-start price (no BTC+USD loss in the same quarter).`
+        : `<strong>${belowHwm.map(p=>p.instrument_name).join(', ')}</strong> below HWM — assignment would sell BTC below quarter-start price. Roll up or buy back.` });
+    checks.push({ label: 'Margin headroom', pass: a.im_btc < 1.0,
+      detail: `IM ${a.im_btc.toFixed(4)} / MM ${a.mm_btc.toFixed(4)} BTC — comfortable ratio (${(a.mm_btc/a.im_btc*100).toFixed(0)}% of IM). No proximity to liquidation.` });
+    const items = checks.map(c => `<li><strong style="color:${c.pass?'var(--gs-pos)':'var(--gs-neg)'}">${c.pass?'✓':'✗'} ${c.label}</strong> — ${c.detail}</li>`).join('');
+    const drift = checks.filter(c => !c.pass);
+    const verdict = drift.length === 0
+      ? `<strong>No drift detected.</strong> Current book matches CMFDH II strategy: short delta + theta harvesting + downside hedge intact, quarterly cadence honored. Continue collection mode; revisit at calendar-roll window.`
+      : `<strong>Drift detected on ${drift.length} dimension(s):</strong> ${drift.map(d => d.label).join('; ')}. Investigate before next rebalance.`;
+    return `<h3>Strategy compare <span style="color:var(--gs-muted); font-weight:400; font-size:11px;">CMFDH II spec vs current book</span></h3>
+      <ul style="margin:0; padding-left:22px; line-height:1.7; font-size:12.5px;">${items}</ul>
+      <div class="verdict">${verdict}</div>`;
+  }
+
+  // ----- Daily fund balance & total return ------------------------------------
+  /* EMBEDDED_BALANCES_START — mirror of daily-balances.json. Auto-replaced by the weekday income run. Do not edit by hand. */
+const EMBEDDED_BALANCES = {
+  "fund": "CMFDH II",
+  "updated_utc": "2026-10-23T00:05:03Z",
+  "performance": {
+    "label": "Net return since inception (Jan 2023)",
+    "as_of": "2026-03-31",
+    "twr_net_pct": 152.3,
+    "twr_net_annualized_pct": 33.0,
+    "irr_money_weighted_pct": 36.8,
+    "note": "Time-weighted, net of fees; nets out all deposits & withdrawals. Updated quarterly from the CMFDH II report (nav/charlie_returns_engine.py). IRR is money-weighted on external investor flows. CMFDH II only — the 52% CAGR marketing figure is CMFDH I+II combined."
+  },
+  "rows": [
+    {
+      "date": "2026-06-16",
+      "btc": 15.6599,
+      "usd": null
+    },
+    {
+      "date": "2026-06-17",
+      "btc": 15.6737,
+      "usd": 1030369,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-19",
+      "btc": 16.03671495,
+      "usd": 1008165,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-22",
+      "btc": 15.93898221,
+      "usd": 1013728,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-23",
+      "btc": 15.90217546,
+      "usd": 1015905,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-24",
+      "btc": 16.08615951,
+      "usd": 1005651,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-25",
+      "btc": 16.34157176,
+      "usd": 992961,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-26",
+      "btc": 16.47226509,
+      "usd": 985322,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-27",
+      "btc": 16.40417586,
+      "usd": 988624,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-29",
+      "btc": 16.57007291,
+      "usd": 981031,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-30",
+      "btc": 16.39819824,
+      "usd": 988811,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-01",
+      "btc": 16.66334986,
+      "usd": 975239,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-02",
+      "btc": 16.41734991,
+      "usd": 989335,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-03",
+      "btc": 16.26034768,
+      "usd": 999220,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-04",
+      "btc": 16.16885454,
+      "usd": 1011248,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-05",
+      "btc": 16.09817799,
+      "usd": 1015953,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-06",
+      "btc": 16.05955551,
+      "usd": 1023278,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-07",
+      "btc": 16.08412068,
+      "usd": 1021214,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-08",
+      "btc": 16.16850513,
+      "usd": 1018147,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-10",
+      "btc": 16.07246021,
+      "usd": 1024582,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-13",
+      "btc": 16.12137288,
+      "usd": 1021388,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-15",
+      "btc": 15.95683685,
+      "usd": 1033307,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-17",
+      "btc": 16.05113285,
+      "usd": 1026431,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-18",
+      "btc": 16.06025786,
+      "usd": 1026190,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-20",
+      "btc": 15.95542329,
+      "usd": 1032915,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-21",
+      "btc": 15.91593188,
+      "usd": 1036018,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-23",
+      "btc": 15.8143851,
+      "usd": 1044005,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-26",
+      "btc": 16.00934072,
+      "usd": 1030189,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-29",
+      "btc": 16.09220541,
+      "usd": 1024430,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-30",
+      "btc": 16.07032602,
+      "usd": 1025979,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-31",
+      "btc": 16.09220541,
+      "usd": 1042673,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-03",
+      "btc": 16.13147779,
+      "usd": 1022199,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-05",
+      "btc": 16.02675259,
+      "usd": 1028684,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-06",
+      "btc": 16.02675259,
+      "usd": 1034477,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-11",
+      "btc": 16.05930483,
+      "usd": 1026953,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-13",
+      "btc": 16.12853254,
+      "usd": 1022058,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-14",
+      "btc": 16.13006075,
+      "usd": 1021013,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-17",
+      "btc": 16.19690028,
+      "usd": 1026889,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-18",
+      "btc": 16.0974818,
+      "usd": 1034021,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-20",
+      "btc": 15.5502508,
+      "usd": 1075300,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-21",
+      "btc": 15.22168117,
+      "usd": 1106073,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-25",
+      "btc": 14.34141506,
+      "usd": 1128383,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-27",
+      "btc": 14.36152735,
+      "usd": 1132337,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-29",
+      "btc": 14.45250972,
+      "usd": 1123054,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-30",
+      "btc": 14.40962276,
+      "usd": 1127292,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-31",
+      "btc": 14.4036473,
+      "usd": 1128723,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-02",
+      "btc": 14.49715366,
+      "usd": 1119659,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-03",
+      "btc": 14.51958244,
+      "usd": 1118079,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-04",
+      "btc": 14.21408875,
+      "usd": 1153161,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-06",
+      "btc": 14.3198737,
+      "usd": 1142475,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-07",
+      "btc": 14.28618977,
+      "usd": 1145521,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-08",
+      "btc": 14.3806099,
+      "usd": 1135381,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-09",
+      "btc": 14.41374146,
+      "usd": 1132329,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-10",
+      "btc": 14.45598454,
+      "usd": 1128122,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-14",
+      "btc": 14.518369,
+      "usd": 1121616,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-15",
+      "btc": 14.41940826,
+      "usd": 1131959,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-16",
+      "btc": 14.64745473,
+      "usd": 1108632,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-17",
+      "btc": 14.59740925,
+      "usd": 1113583,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-18",
+      "btc": 14.58227526,
+      "usd": 1113794,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-19",
+      "btc": 14.43391392,
+      "usd": 1167805,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (trade, 13.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-20",
+      "btc": 14.16410113,
+      "usd": 1151251,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (trade, 10.2h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-21",
+      "btc": 14.24014174,
+      "usd": 1156264,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-22",
+      "btc": 14.11244178,
+      "usd": 1222610,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-23",
+      "btc": 13.8247194,
+      "usd": 1192140,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-24",
+      "btc": 13.76023375,
+      "usd": 1161384,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-25",
+      "btc": 13.90216146,
+      "usd": 1173280,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-26",
+      "btc": 13.95440924,
+      "usd": 1173343,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-27",
+      "btc": 13.94737127,
+      "usd": 1177458,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-28",
+      "btc": 14.14945335,
+      "usd": 1172602,
+      "source": "Deribit margin_balance @ 16:21 Bali"
+    },
+    {
+      "date": "2026-09-29",
+      "btc": 14.13899414,
+      "usd": 1174202,
+      "source": "Deribit margin_balance @ 12:01 Bali (catch-up run)"
+    },
+    {
+      "date": "2026-09-30",
+      "btc": 14.11495361,
+      "usd": 1176910,
+      "source": "Deribit margin_balance @ 10:55 Bali"
+    },
+    {
+      "date": "2026-10-05",
+      "btc": 13.64788158,
+      "usd": 1177603,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-06",
+      "btc": 13.67127322,
+      "usd": 1174340,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-07",
+      "btc": 13.69948314,
+      "usd": 1172328,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-08",
+      "btc": 13.88542969,
+      "usd": 1155848,
+      "source": "Deribit margin_balance @ 07:54 Bali"
+    },
+    {
+      "date": "2026-10-09",
+      "btc": 13.99861714,
+      "usd": 1146086,
+      "source": "Deribit margin_balance @ 10:28 Bali"
+    },
+    {
+      "date": "2026-10-10",
+      "btc": 13.94703256,
+      "usd": 1150768,
+      "source": "Deribit margin_balance @ 11:16 Bali"
+    },
+    {
+      "date": "2026-10-12",
+      "btc": 13.83416678,
+      "usd": 1160208,
+      "source": "Deribit margin_balance @ 13:46 Bali"
+    },
+    {
+      "date": "2026-10-14",
+      "btc": 13.87141861,
+      "usd": 1158186,
+      "source": "Deribit margin_balance @ 08:37 Bali"
+    },
+    {
+      "date": "2026-10-15",
+      "btc": 14.07229901,
+      "usd": 1140979,
+      "source": "Deribit margin_balance @ 16:24 Bali"
+    },
+    {
+      "date": "2026-10-16",
+      "btc": 13.95915824,
+      "usd": 1150190,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-18",
+      "btc": 14.05006147,
+      "usd": 1142868,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-19",
+      "btc": 14.02225085,
+      "usd": 1145322,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-20",
+      "btc": 13.99798202,
+      "usd": 1147502,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-21",
+      "btc": 13.92474667,
+      "usd": 1154188,
+      "source": "Deribit margin_balance @ 07:44 Bali"
+    },
+    {
+      "date": "2026-10-22",
+      "btc": 13.82231604,
+      "usd": 1163769,
+      "source": "Deribit margin_balance @ 08:33 Bali"
+    },
+    {
+      "date": "2026-10-23",
+      "btc": 14.07244565,
+      "usd": 1142211,
+      "source": "Deribit margin_balance @ 08:05 Bali"
+    }
+  ],
+  "data_gaps": []
+};
+/* EMBEDDED_BALANCES_END */
+
+  async function loadBalances() {
+    try {
+      const r = await fetch('./daily-balances.json?_=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      STATE.balances = await r.json();
+    } catch (err) {
+      STATE.balances = EMBEDDED_BALANCES;
+    }
+    renderBalances();
+  }
+
+  function renderBalances() {
+    const data = STATE.balances || EMBEDDED_BALANCES;
+    const spot = STATE.btcSpot;
+
+    // Fund-level net return reference (time-weighted, net of fees; flows removed). Updated quarterly.
+    const perfEl = $('balances-perf');
+    if (perfEl) {
+      const p = data.performance;
+      if (p) {
+        const parts = [];
+        if (Number.isFinite(Number(p.twr_net_pct))) parts.push('<strong style="color:var(--gs-pos); font-size:16px;">+' + p.twr_net_pct + '%</strong> net &middot; time-weighted');
+        if (Number.isFinite(Number(p.twr_net_annualized_pct))) parts.push('<strong>' + p.twr_net_annualized_pct + '%/yr</strong>');
+        if (Number.isFinite(Number(p.irr_money_weighted_pct))) parts.push('<strong>' + p.irr_money_weighted_pct + '%</strong> IRR (money-weighted)');
+        perfEl.innerHTML = '<h4>' + (p.label || 'Net return since inception') + '</h4>'
+          + '<div style="font-family:\'SF Mono\',monospace; font-size:13px; margin:4px 0 6px;">' + parts.join(' &nbsp;&middot;&nbsp; ') + '</div>'
+          + '<div style="font-size:11px; color:var(--gs-muted);">As of ' + (p.as_of || '&mdash;') + (p.note ? ' &middot; ' + p.note : '') + '</div>';
+      } else {
+        perfEl.innerHTML = '<span style="color:var(--gs-muted);">Net return reference pending.</span>';
+      }
+    }
+
+    // Daily balance record (newest first)
+    const tbody = $('balances-tbody');
+    if (!tbody) return;
+    const numOrNull = (v) => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v))) ? null : Number(v);
+    const rows = Array.isArray(data.rows) ? data.rows.slice() : [];
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="3" class="lbl" style="text-align:center; color:var(--gs-muted);">No daily balances recorded yet.</td></tr>';
+      return;
+    }
+    rows.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+    const latestDate = rows[0].date;
+    const html = rows.map((row) => {
+      const btc = numOrNull(row.btc);
+      const storedUsd = numOrNull(row.usd);
+      const usd = storedUsd !== null ? storedUsd
+        : (row.date === latestDate && spot && Number.isFinite(btc) ? btc * spot : null);
+      const usdCell = usd !== null
+        ? ('$' + Math.round(usd).toLocaleString() + (storedUsd === null ? ' <span style="color:var(--gs-muted); font-size:10px;">@spot</span>' : ''))
+        : '<span style="color:var(--gs-muted);">&mdash;</span>';
+      const isToday = row.date === latestDate;
+      return '<tr' + (isToday ? ' class="held"' : '') + '>'
+        + '<td class="lbl">' + row.date + (isToday ? ' <span style="color:var(--gs-warn); font-size:10px;">TODAY</span>' : '') + '</td>'
+        + '<td class="num">' + (Number.isFinite(btc) ? btc.toFixed(4) : '&mdash;') + '</td>'
+        + '<td class="num">' + usdCell + '</td>'
+        + '</tr>';
+    }).join('');
+    tbody.innerHTML = html;
+  }
+
+  // ----- Refresh --------------------------------------------------------------
+  async function refresh() {
+    const status = $('fetch-status');
+    status.className = 'fetch-status';
+    status.innerHTML = '<strong>Fetching live Deribit chain &amp; positions...</strong>';
+    try {
+      if (!STATE.positions) STATE.positions = await loadPositions();
+      try {
+        const [futRes, optRes, acctRes] = await Promise.all([
+          fetchDeribitPositions('future'),
+          fetchDeribitPositions('option'),
+          fetchDeribitAccount(),
+        ]);
+        STATE.deribitPositions = [...futRes, ...optRes];
+        STATE.deribitSummary = summarizeDeribitPositions(STATE.deribitPositions);
+        STATE.deribitAccount = acctRes;
+      } catch (posErr) {
+        console.warn('Deribit positions fetch failed', posErr);
+        STATE.deribitPositions = [];
+        STATE.deribitSummary = null;
+        STATE.deribitAccount = null;
+      }
+
+      let btcRows = [];
+      try {
+        btcRows = await fetchOpenclaw('/download/csv/deribit/btc/tomorrow');
+      } catch (e) {
+        try { btcRows = await fetchOpenclaw('/download/csv/deribit/btc/today'); } catch (e2) { console.warn('Deribit fetch failed', e, e2); }
+      }
+      const spot = parseFloat(btcRows[0]?.underlying_price || btcRows[0]?.index_price || '0');
+      if (spot) STATE.btcSpot = spot;
+
+      STATE.chainRows = btcRows.filter(r => (r.option_type||'').trim() === 'C').map(r => ({
+        strike: Number(r.strike),
+        bid: Number(r.bid_price || r.best_bid_price || 0),
+        ask: Number(r.ask_price || r.best_ask_price || 0),
+        mark: Number(r.mark_price || 0),
+        delta: Number(r.delta || 0),
+        iv: Number(r.mark_iv || r.implied_volatility || 0) / 100,
+      })).filter(r => Number.isFinite(r.strike));
+
+      // Feed freshness from the feed's OWN snapshot_at, not the wall clock
+      const snapRaw = btcRows[0]?.snapshot_at || null;
+      STATE.feedTimestamp = snapRaw ? new Date(snapRaw) : null;
+      STATE.lastRefresh = new Date();
+      const feedOk = !!(STATE.feedTimestamp && !isNaN(STATE.feedTimestamp) && STATE.btcSpot);
+      STATE.fetchOk = feedOk;
+
+      renderSnapshotBar();
+      renderPositions();
+      renderAi();
+      renderBalances();
+
+      $('utc-now').textContent = STATE.lastRefresh.toUTCString().replace('GMT','UTC');
+
+      if (feedOk) {
+        const ageMs = Date.now() - STATE.feedTimestamp.getTime();
+        const stale = ageMs > 30 * 60 * 1000;
+        $('last-updated').textContent = 'Last Deribit feed: ' + fmtFeedTs(STATE.feedTimestamp) + ' · ' + fmtAge(ageMs);
+        $('last-updated').className = 'last-updated ' + (stale ? 'stale' : 'fresh');
+        status.className = 'fetch-status ' + (stale ? '' : 'ok');
+        status.innerHTML = `<strong>${stale ? '⚠ Feed stale' : 'Live ✓'}</strong> Last Deribit pull <strong>${fmtFeedTs(STATE.feedTimestamp)}</strong> (${fmtAge(ageMs)}) &middot; spot $${STATE.btcSpot.toLocaleString(undefined,{maximumFractionDigits:0})} &middot; positions snapshot ${new Date(STATE.positions.snapshot_utc).toISOString().substring(0,10)}.`;
+        $('status-badge').textContent = stale ? 'Stale feed' : 'Live';
+        $('status-badge').className = 'badge ' + (stale ? 'warn' : 'live');
+      } else {
+        $('last-updated').textContent = STATE.feedTimestamp
+          ? 'Last Deribit feed: ' + fmtFeedTs(STATE.feedTimestamp) + ' · ' + fmtAge(Date.now() - STATE.feedTimestamp.getTime())
+          : 'No Deribit feed received';
+        $('last-updated').className = 'last-updated stale';
+        status.className = 'fetch-status err';
+        status.innerHTML = `<strong>No live Deribit data.</strong> openclaw responded but returned no usable BTC rows. Showing last positions snapshot ${new Date(STATE.positions.snapshot_utc).toISOString().substring(0,10)}.`;
+        $('status-badge').textContent = 'No feed';
+        $('status-badge').className = 'badge warn';
+      }
+    } catch (err) {
+      STATE.fetchOk = false;
+      status.className = 'fetch-status err';
+      status.innerHTML = `<strong>Refresh failed:</strong> ${err.message}<br>Most common cause: CORS blocked from <code>file://</code>. Workaround: serve the folder (e.g. <code>python -m http.server 8000</code>) and open <code>http://localhost:8000/dashboard.html</code>. Greeks/scenario/calendar/strategy still work from positions.json.`;
+      $('last-updated').textContent = STATE.feedTimestamp
+        ? 'Last Deribit feed: ' + fmtFeedTs(STATE.feedTimestamp) + ' · ' + fmtAge(Date.now() - STATE.feedTimestamp.getTime())
+        : 'No Deribit feed received yet';
+      $('last-updated').className = 'last-updated stale';
+      $('status-badge').textContent = 'Stale';
+      $('status-badge').className = 'badge warn';
+      if (STATE.positions) { renderSnapshotBar(); renderPositions(); renderAi(); }
+      renderBalances();
+      console.error('Refresh error:', err);
+    }
+  }
+
+  // ----- Interactions: tabs, smooth-scroll, floating Go-to-Top ----------------
+  ROOT.addEventListener('click', (e) => {
+    const tab = e.target.closest('.ai-tab');
+    if (tab) {
+      ROOT.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      STATE.activeTab = tab.dataset.tab;
+      renderAi();
+      return;
+    }
+    const scroller = e.target.closest('[data-scroll]');
+    if (scroller) {
+      e.preventDefault();
+      const target = ROOT.querySelector(scroller.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  const floatTop = $('floatTop');
+  floatTop.addEventListener('click', () => {
+    document.getElementById('dash-top').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  window.addEventListener('scroll', () => {
+    floatTop.style.display = (window.scrollY > 400) ? 'block' : 'none';
+  }, { passive: true });
+
+  // Live UTC clock (top line) — distinct from the Deribit feed timestamp
+  setInterval(() => { $('utc-now').textContent = new Date().toUTCString().replace('GMT','UTC'); }, 1000);
+
+  // Boot
+  loadAnalysis();
+  loadBalances();
+  refresh();
+  setInterval(refresh, REFRESH_MS);
+})();
+</script>
+<!-- ====================== SQUARESPACE CODE-BLOCK END ====================== -->
+
+</body>
+</html>

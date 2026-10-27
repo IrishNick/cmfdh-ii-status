@@ -1,0 +1,546 @@
+{
+  "fund": "CMFDH II",
+  "updated_utc": "2026-10-23T00:05:03Z",
+  "performance": {
+    "label": "Net return since inception (Jan 2023)",
+    "as_of": "2026-03-31",
+    "twr_net_pct": 152.3,
+    "twr_net_annualized_pct": 33.0,
+    "irr_money_weighted_pct": 36.8,
+    "note": "Time-weighted, net of fees; nets out all deposits & withdrawals. Updated quarterly from the CMFDH II report (nav/charlie_returns_engine.py). IRR is money-weighted on external investor flows. CMFDH II only — the 52% CAGR marketing figure is CMFDH I+II combined."
+  },
+  "rows": [
+    {
+      "date": "2026-06-16",
+      "btc": 15.6599,
+      "usd": null
+    },
+    {
+      "date": "2026-06-17",
+      "btc": 15.6737,
+      "usd": 1030369,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-19",
+      "btc": 16.03671495,
+      "usd": 1008165,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-22",
+      "btc": 15.93898221,
+      "usd": 1013728,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-23",
+      "btc": 15.90217546,
+      "usd": 1015905,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-24",
+      "btc": 16.08615951,
+      "usd": 1005651,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-25",
+      "btc": 16.34157176,
+      "usd": 992961,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-26",
+      "btc": 16.47226509,
+      "usd": 985322,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-27",
+      "btc": 16.40417586,
+      "usd": 988624,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-29",
+      "btc": 16.57007291,
+      "usd": 981031,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-06-30",
+      "btc": 16.39819824,
+      "usd": 988811,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-01",
+      "btc": 16.66334986,
+      "usd": 975239,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-02",
+      "btc": 16.41734991,
+      "usd": 989335,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-03",
+      "btc": 16.26034768,
+      "usd": 999220,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-04",
+      "btc": 16.16885454,
+      "usd": 1011248,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-05",
+      "btc": 16.09817799,
+      "usd": 1015953,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-06",
+      "btc": 16.05955551,
+      "usd": 1023278,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-07",
+      "btc": 16.08412068,
+      "usd": 1021214,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-08",
+      "btc": 16.16850513,
+      "usd": 1018147,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-10",
+      "btc": 16.07246021,
+      "usd": 1024582,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-13",
+      "btc": 16.12137288,
+      "usd": 1021388,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-15",
+      "btc": 15.95683685,
+      "usd": 1033307,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-17",
+      "btc": 16.05113285,
+      "usd": 1026431,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-18",
+      "btc": 16.06025786,
+      "usd": 1026190,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-20",
+      "btc": 15.95542329,
+      "usd": 1032915,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-21",
+      "btc": 15.91593188,
+      "usd": 1036018,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-23",
+      "btc": 15.8143851,
+      "usd": 1044005,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-26",
+      "btc": 16.00934072,
+      "usd": 1030189,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-29",
+      "btc": 16.09220541,
+      "usd": 1024430,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-30",
+      "btc": 16.07032602,
+      "usd": 1025979,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-07-31",
+      "btc": 16.09220541,
+      "usd": 1042673,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-03",
+      "btc": 16.13147779,
+      "usd": 1022199,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-05",
+      "btc": 16.02675259,
+      "usd": 1028684,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-06",
+      "btc": 16.02675259,
+      "usd": 1034477,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-11",
+      "btc": 16.05930483,
+      "usd": 1026953,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-13",
+      "btc": 16.12853254,
+      "usd": 1022058,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-14",
+      "btc": 16.13006075,
+      "usd": 1021013,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-17",
+      "btc": 16.19690028,
+      "usd": 1026889,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-18",
+      "btc": 16.0974818,
+      "usd": 1034021,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-20",
+      "btc": 15.5502508,
+      "usd": 1075300,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-21",
+      "btc": 15.22168117,
+      "usd": 1106073,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-25",
+      "btc": 14.34141506,
+      "usd": 1128383,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-27",
+      "btc": 14.36152735,
+      "usd": 1132337,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-29",
+      "btc": 14.45250972,
+      "usd": 1123054,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-30",
+      "btc": 14.40962276,
+      "usd": 1127292,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-08-31",
+      "btc": 14.4036473,
+      "usd": 1128723,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-02",
+      "btc": 14.49715366,
+      "usd": 1119659,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-03",
+      "btc": 14.51958244,
+      "usd": 1118079,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-04",
+      "btc": 14.21408875,
+      "usd": 1153161,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-06",
+      "btc": 14.3198737,
+      "usd": 1142475,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-07",
+      "btc": 14.28618977,
+      "usd": 1145521,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-08",
+      "btc": 14.3806099,
+      "usd": 1135381,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-09",
+      "btc": 14.41374146,
+      "usd": 1132329,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-10",
+      "btc": 14.45598454,
+      "usd": 1128122,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-14",
+      "btc": 14.518369,
+      "usd": 1121616,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-15",
+      "btc": 14.41940826,
+      "usd": 1131959,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-16",
+      "btc": 14.64745473,
+      "usd": 1108632,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-17",
+      "btc": 14.59740925,
+      "usd": 1113583,
+      "source": "Deribit margin_balance @ 07:00 Bali"
+    },
+    {
+      "date": "2026-09-18",
+      "btc": 14.58227526,
+      "usd": 1113794,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-19",
+      "btc": 14.43391392,
+      "usd": 1167805,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (trade, 13.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-20",
+      "btc": 14.16410113,
+      "usd": 1151251,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (trade, 10.2h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-21",
+      "btc": 14.24014174,
+      "usd": 1156264,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-22",
+      "btc": 14.11244178,
+      "usd": 1222610,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-23",
+      "btc": 13.8247194,
+      "usd": 1192140,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-24",
+      "btc": 13.76023375,
+      "usd": 1161384,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-25",
+      "btc": 13.90216146,
+      "usd": 1173280,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-26",
+      "btc": 13.95440924,
+      "usd": 1173343,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-27",
+      "btc": 13.94737127,
+      "usd": 1177458,
+      "source": "RECONSTRUCTED: Deribit tx-log equity (settlement, 15.0h before 07:00 Bali) x BTC-PERP close (estimate: equity basis, not 07:00 margin_balance; basis diff ~0.1-0.2 BTC)",
+      "estimate": true
+    },
+    {
+      "date": "2026-09-28",
+      "btc": 14.14945335,
+      "usd": 1172602,
+      "source": "Deribit margin_balance @ 16:21 Bali"
+    },
+    {
+      "date": "2026-09-29",
+      "btc": 14.13899414,
+      "usd": 1174202,
+      "source": "Deribit margin_balance @ 12:01 Bali (catch-up run)"
+    },
+    {
+      "date": "2026-09-30",
+      "btc": 14.11495361,
+      "usd": 1176910,
+      "source": "Deribit margin_balance @ 10:55 Bali"
+    },
+    {
+      "date": "2026-10-05",
+      "btc": 13.64788158,
+      "usd": 1177603,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-06",
+      "btc": 13.67127322,
+      "usd": 1174340,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-07",
+      "btc": 13.69948314,
+      "usd": 1172328,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-08",
+      "btc": 13.88542969,
+      "usd": 1155848,
+      "source": "Deribit margin_balance @ 07:54 Bali"
+    },
+    {
+      "date": "2026-10-09",
+      "btc": 13.99861714,
+      "usd": 1146086,
+      "source": "Deribit margin_balance @ 10:28 Bali"
+    },
+    {
+      "date": "2026-10-10",
+      "btc": 13.94703256,
+      "usd": 1150768,
+      "source": "Deribit margin_balance @ 11:16 Bali"
+    },
+    {
+      "date": "2026-10-12",
+      "btc": 13.83416678,
+      "usd": 1160208,
+      "source": "Deribit margin_balance @ 13:46 Bali"
+    },
+    {
+      "date": "2026-10-14",
+      "btc": 13.87141861,
+      "usd": 1158186,
+      "source": "Deribit margin_balance @ 08:37 Bali"
+    },
+    {
+      "date": "2026-10-15",
+      "btc": 14.07229901,
+      "usd": 1140979,
+      "source": "Deribit margin_balance @ 16:24 Bali"
+    },
+    {
+      "date": "2026-10-16",
+      "btc": 13.95915824,
+      "usd": 1150190,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-18",
+      "btc": 14.05006147,
+      "usd": 1142868,
+      "source": "Deribit margin_balance @ 06:50 Bali"
+    },
+    {
+      "date": "2026-10-19",
+      "btc": 14.02225085,
+      "usd": 1145322,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-20",
+      "btc": 13.99798202,
+      "usd": 1147502,
+      "source": "Deribit margin_balance @ 06:51 Bali"
+    },
+    {
+      "date": "2026-10-21",
+      "btc": 13.92474667,
+      "usd": 1154188,
+      "source": "Deribit margin_balance @ 07:44 Bali"
+    },
+    {
+      "date": "2026-10-22",
+      "btc": 13.82231604,
+      "usd": 1163769,
+      "source": "Deribit margin_balance @ 08:33 Bali"
+    },
+    {
+      "date": "2026-10-23",
+      "btc": 14.07244565,
+      "usd": 1142211,
+      "source": "Deribit margin_balance @ 08:05 Bali"
+    }
+  ],
+  "data_gaps": []
+}

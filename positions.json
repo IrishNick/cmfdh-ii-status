@@ -1,0 +1,56 @@
+{
+  "snapshot_utc": "2026-06-22T06:20:20Z",
+  "source": "openclaw /deribit live (account + positions)",
+  "fund": "CMFDH II",
+  "quarter": "Q2 2026",
+  "expiry": "2026-06-26",
+  "note": "Income engine idle in the drawdown — only a near-dead Jun 26 78k call remains, so portfolio vega/theta are negligible. Net exposure is the short SEP26 future (standing 1/2 hedge). Option vega/theta/rho below are modeled (USD) and effectively ~0; the residual 78k-C marks ~$40.",
+  "btc_aggregate": {
+    "net_delta_btc": -8.2103,
+    "delta_btc": -8.2103,
+    "gamma": 0.0,
+    "vega": -2.0,
+    "theta_per_day": 10.0,
+    "rho": -0.5,
+    "im_btc": 0.3471,
+    "mm_btc": 0.1778,
+    "rspl_btc": 0.0,
+    "uspl_btc": -0.1322,
+    "pnl_btc": 0.2615
+  },
+  "positions": [
+    {
+      "instrument": "BTC-25SEP26",
+      "type": "future",
+      "amount_usd": -531000,
+      "value_btc": -8.2084,
+      "avg_price_usd": 66818.5,
+      "mark_price_usd": 64689.98,
+      "index_price_usd": 64051.45,
+      "basis_usd": 638.53,
+      "delta_btc": -8.2084,
+      "pnl_btc": 0.2615,
+      "roi_pct": 78.8,
+      "im_btc": 0.3317,
+      "mm_btc": 0.1675
+    },
+    {
+      "instrument": "BTC-26JUN26-78000-C",
+      "type": "option",
+      "right": "call",
+      "strike_usd": 78000,
+      "amount_contracts": -0.1,
+      "avg_price_btc": 0.0006,
+      "mark_price_btc": 0.00063742,
+      "delta_btc": -0.00189,
+      "gamma": 0.0,
+      "vega": -2.0,
+      "theta_per_day": 10.0,
+      "rho": -0.5,
+      "pnl_btc": 0.0,
+      "roi_pct": 1.7,
+      "im_btc": 0.0101,
+      "mm_btc": 0.0076
+    }
+  ]
+}
